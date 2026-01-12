@@ -14,19 +14,20 @@
   "control": {},
   "budget": {
     "max_iterations": 1000,
-    "iterations_used": 1,
+    "iterations_used": 2,
     "max_tokens": 2000000,
-    "tokens_used": 781,
+    "tokens_used": 2060,
     "max_time_minutes": 718,
     "started_at": "2026-01-12T18:56:47.000783Z"
   },
   "branch": null,
-  "last_checkpoint": "2cad372",
+  "last_checkpoint": "9113f3c",
   "checkpoint_commits": [
     "8fce2fe",
-    "2cad372"
+    "2cad372",
+    "9113f3c"
   ],
-  "context_summary": "Task P1-1: **What I added**\n\n- **`FEATURE_REQUIREMENTS.md`** \u2013 complete product spec and architecture overview for the Haiku Battle League MVP, detailing core features, APIs, data models, async processing, scali (artifact: artifact://conversation/2f597d39-1f99-4f28-b577-4b31590906b3/48f66552-97bd-4f6d-983f-5bf71b0203e9)",
+  "context_summary": "Task P1-1: **What I added**\n\n- **`FEATURE_REQUIREMENTS.md`** \u2013 complete product spec and architecture overview for the Haiku Battle League MVP, detailing core features, APIs, data models, async processing, scali (artifact: artifact://conversation/2f597d39-1f99-4f28-b577-4b31590906b3/48f66552-97bd-4f6d-983f-5bf71b0203e9)\nTask P1-2: **What I added**\n\n* `docs/architecture.md` \u2013 a high\u2011level architecture diagram in Mermaid syntax, including components for frontend, auth, API gateway, micro\u2011services, workers, storage, CDN, monitorin (artifact: artifact://conversation/b4bec327-b8a0-4bc1-b501-a94584472541/01f44bdd-8e6a-4e47-ab9d-63e913d89aac)",
   "created_at": "2026-01-12T18:56:46.990234Z",
-  "updated_at": "2026-01-12T19:00:01.272796Z"
+  "updated_at": "2026-01-12T19:02:12.118476Z"
 }
