@@ -14,14 +14,14 @@
   "control": {},
   "budget": {
     "max_iterations": 1000,
-    "iterations_used": 1,
+    "iterations_used": 2,
     "max_tokens": 2000000,
-    "tokens_used": 2207,
+    "tokens_used": 2844,
     "max_time_minutes": 707,
     "started_at": "2026-01-12T19:07:24.442098Z"
   },
   "branch": null,
-  "last_checkpoint": "61ab8b7",
+  "last_checkpoint": "284879c",
   "checkpoint_commits": [
     "8fce2fe",
     "2cad372",
@@ -29,9 +29,10 @@
     "79c93d1",
     "af9dcf6",
     "2e33aed",
-    "61ab8b7"
+    "61ab8b7",
+    "284879c"
   ],
-  "context_summary": "Task P1-1: **What I added**\n\n- **`FEATURE_REQUIREMENTS.md`** \u2013 complete product spec and architecture overview for the Haiku Battle League MVP, detailing core features, APIs, data models, async processing, scali (artifact: artifact://conversation/2f597d39-1f99-4f28-b577-4b31590906b3/48f66552-97bd-4f6d-983f-5bf71b0203e9)\nTask P1-2: **What I added**\n\n* `docs/architecture.md` \u2013 a high\u2011level architecture diagram in Mermaid syntax, including components for frontend, auth, API gateway, micro\u2011services, workers, storage, CDN, monitorin (artifact: artifact://conversation/b4bec327-b8a0-4bc1-b501-a94584472541/01f44bdd-8e6a-4e47-ab9d-63e913d89aac)\nTask P1-3: **What I added**\n\n- `docs/openapi.yaml` \u2013 A complete OpenAPI\u202f3.1 specification for the Haiku Battle League MVP.  \n  - Describes all public endpoints: auth, haiku CRUD, battle submission, leaderboard r (artifact: artifact://conversation/a8b68158-d481-4b4e-a6de-589a8791de26/260669e5-f5d8-4141-b520-fa956d2ba7dc)\nTask P1-4: **What I did**\n\n- Created a PostgreSQL schema file `migrations/000_initial.sql` defining tables and relationships for the Haiku Battle League MVP.\n- Added tables:\n  - `users` (UUID, email, password ha (artifact: artifact://conversation/4c760f5e-c6b0-49ec-85b1-a6113e8ebb43/8323ae81-e632-46ba-91a3-fa4e7b8cc66f)\nTask P2-1: Task completed (artifact: artifact://conversation/0c77dca0-51f2-4b02-86c6-77fb5646249e/8169bc4c-364c-449b-87c1-89312a7f0339)",
+  "context_summary": "Task P1-1: **What I added**\n\n- **`FEATURE_REQUIREMENTS.md`** \u2013 complete product spec and architecture overview for the Haiku Battle League MVP, detailing core features, APIs, data models, async processing, scali (artifact: artifact://conversation/2f597d39-1f99-4f28-b577-4b31590906b3/48f66552-97bd-4f6d-983f-5bf71b0203e9)\nTask P1-2: **What I added**\n\n* `docs/architecture.md` \u2013 a high\u2011level architecture diagram in Mermaid syntax, including components for frontend, auth, API gateway, micro\u2011services, workers, storage, CDN, monitorin (artifact: artifact://conversation/b4bec327-b8a0-4bc1-b501-a94584472541/01f44bdd-8e6a-4e47-ab9d-63e913d89aac)\nTask P1-3: **What I added**\n\n- `docs/openapi.yaml` \u2013 A complete OpenAPI\u202f3.1 specification for the Haiku Battle League MVP.  \n  - Describes all public endpoints: auth, haiku CRUD, battle submission, leaderboard r (artifact: artifact://conversation/a8b68158-d481-4b4e-a6de-589a8791de26/260669e5-f5d8-4141-b520-fa956d2ba7dc)\nTask P1-4: **What I did**\n\n- Created a PostgreSQL schema file `migrations/000_initial.sql` defining tables and relationships for the Haiku Battle League MVP.\n- Added tables:\n  - `users` (UUID, email, password ha (artifact: artifact://conversation/4c760f5e-c6b0-49ec-85b1-a6113e8ebb43/8323ae81-e632-46ba-91a3-fa4e7b8cc66f)\nTask P2-1: Task completed (artifact: artifact://conversation/0c77dca0-51f2-4b02-86c6-77fb5646249e/8169bc4c-364c-449b-87c1-89312a7f0339)\nTask P2-3: Implemented haiku retrieval and enhanced submission flow\n\n- **GET `/api/haiku/:id`** \u2013 fetch single haiku by ID.\n- Updated code comments for clarity.\n- Builds successfully with TypeScript.\n\nYou can no (artifact: artifact://conversation/3b1d78f1-00c5-4f60-a352-831972479fdb/b408b858-6f80-4ba3-8e22-08f951415c89)",
   "created_at": "2026-01-12T18:56:46.990234Z",
-  "updated_at": "2026-01-12T19:10:14.069762Z"
+  "updated_at": "2026-01-12T19:11:10.847968Z"
 }
