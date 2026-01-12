@@ -66,6 +66,14 @@ app.get('/api/haiku/random', (req, res) => {
   res.json(shuffled.slice(0, qty));
 });
 
+// --- Haiku retrieval by ID ----------------------------
+app.get('/api/haiku/:id', (req, res) => {
+  const { id } = req.params;
+  const haiku = haikus.find(h => h.id === id);
+  if (!haiku) return res.status(404).json({ error: 'Haiku not found' });
+  res.json(haiku);
+});
+
 // --- Battle ----------------------------
 app.post('/api/battle', (req, res) => {
   const { winnerId, haikuAId, haikuBId } = req.body;
@@ -98,4 +106,3 @@ app.get('/api/leaderboard', (req, res) => {
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Haiku Battle League API listening on port ${PORT}`));
-
