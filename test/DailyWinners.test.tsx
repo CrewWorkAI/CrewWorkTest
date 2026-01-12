@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import DailyWinners from '../../app/repositories/CrewWorkAI/CrewWorkTest/components/DailyWinners';
+import DailyWinners from '../frontend/components/DailyWinners';
 
 describe('DailyWinners component', () => {
   const winners = [

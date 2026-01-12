@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import BattleCard from '../../app/repositories/CrewWorkAI/CrewWorkTest/components/BattleCard';
+import BattleCard from '../frontend/components/BattleCard';
 
 describe('BattleCard component', () => {
   const mockOnVote = jest.fn();

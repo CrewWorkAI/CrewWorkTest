@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import LeaderboardTable from '../../app/repositories/CrewWorkAI/CrewWorkTest/components/LeaderboardTable';
+import LeaderboardTable from '../frontend/components/LeaderboardTable';
 
 describe('LeaderboardTable', () => {
   const entries = [

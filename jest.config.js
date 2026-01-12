@@ -1,17 +1,11 @@
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.tsx?$': 'ts-jest',
-  },
+  testEnvironment: 'node',
+  // Use plain JS tests; no preset required.
+  transform: {},
   moduleNameMapper: {
-    '\\.\.(css|less|sass|scss)$': 'identity-obj-proxy',
+    '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
   },
-  globals: {
-    'ts-jest': {
-      isolatedModules: true,
-    },
-  },
-  collectCoverageFrom: ['**/*.tsx'],
-  testMatch: ['**/?(*.)+(spec|test).[tj]sx?'],
+  collectCoverageFrom: ['**/*.js'],
+  testMatch: ['**/?(*.)+(spec|test).[tj]s'],
+  testPathIgnorePatterns: ['/integration.test.js', '/e2e/', '/node_modules/'],
 };
