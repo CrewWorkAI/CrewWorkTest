@@ -6,12 +6,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.scoreAggregationQueue = void 0;
 const bullmq_1 = require("bullmq");
 const redisClient_1 = __importDefault(require("./redisClient"));
+const scoreAggregationWorker_1 = require("./workers/scoreAggregationWorker");
 /**
  * A lightweight fake queue for use in the test environment. It exposes the
  * same `add` method but performs no network I/O.
  */
 class FakeQueue {
     async add(_, payload) {
+        // In test environments we immediately invoke the aggregation logic
+        if (payload && payload.winnerUserId) {
+            await (0, scoreAggregationWorker_1.processAggregateJob)(payload.winnerUserId, payload.createdAt);
+        }
         return Promise.resolve({ id: 'fake-job-id', ...payload });
     }
 }

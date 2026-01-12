@@ -1,5 +1,6 @@
 import { Queue } from 'bullmq';
 import connection from './redisClient';
+import { processAggregateJob } from './workers/scoreAggregationWorker';
 
 /**
  * A lightweight fake queue for use in the test environment. It exposes the
@@ -7,6 +8,10 @@ import connection from './redisClient';
  */
 class FakeQueue {
   async add(_: string, payload: any) {
+    // In test environments we immediately invoke the aggregation logic
+    if (payload && payload.winnerUserId) {
+      await processAggregateJob(payload.winnerUserId, payload.createdAt);
+    }
     return Promise.resolve({ id: 'fake-job-id', ...payload });
   }
 }

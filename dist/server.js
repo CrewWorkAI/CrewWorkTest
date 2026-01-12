@@ -164,6 +164,11 @@ app.post('/api/battle', async (req, res) => {
         await redisInstance_1.default.del(`leaderboard:daily`, `leaderboard:weekly`, `leaderboard:monthly`, `leaderboard:all`);
     }
     catch (_) { }
+    // Update Redis sorted set for all-time leaderboard if Redis is enabled
+    try {
+        await redisInstance_1.default.zadd('leaderboard:all', 1, battle.winnerId);
+    }
+    catch (_) { }
     res.json(battle);
 });
 // --- Leaderboard ----------------------------
@@ -181,6 +186,28 @@ app.get('/api/leaderboard', async (req, res) => {
         const cached = await redisInstance_1.default.get(cacheKey);
         if (cached) {
             return res.json(JSON.parse(cached));
+        }
+        // If Redis client is available and the key represents the all‑time
+        // leaderboard, attempt to fetch from the sorted set to avoid
+        // recomputing from scratch.
+        if (process.env.USE_REDIS === '1' && period === 'all') {
+            const raw = await redisInstance_1.default.zrevrange(`leaderboard:all`, 0, -1, { withscores: true });
+            if (raw && raw.length > 0) {
+                const leaderboard = [];
+                for (let i = 0; i < raw.length; i += 2) {
+                    const userId = raw[i];
+                    const pts = parseFloat(raw[i + 1]);
+                    const user = users.find((u) => u.id === userId);
+                    leaderboard.push({
+                        rank: i / 2 + 1,
+                        userId,
+                        email: user?.email ?? 'unknown',
+                        points: pts,
+                    });
+                }
+                await redisInstance_1.default.set(cacheKey, JSON.stringify(leaderboard), 'EX', ttlSeconds);
+                return res.json(leaderboard);
+            }
         }
     }
     catch (_) { }
