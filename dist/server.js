@@ -9,7 +9,9 @@ const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const uuid_1 = require("uuid");
 const queue_1 = require("./queue");
+const cron_1 = require("./cron");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const redisInstance_1 = __importDefault(require("./redisInstance"));
 /** Simple token helper. Assumes token is the user ID. */
 function getUserFromToken(req) {
     const authHeader = req.headers.authorization;
@@ -120,62 +122,96 @@ app.get('/api/battle/pair', (req, res) => {
     const pair = shuffled.slice(0, qty);
     res.json(pair);
 });
-app.post('/api/battle', (req, res) => {
+app.post('/api/battle', async (req, res) => {
     const { winnerId, haikuIds } = req.body;
     if (!winnerId || !Array.isArray(haikuIds) || haikuIds.length !== 2) {
         return res.status(400).json({ error: 'Provide winnerId and two haikuIds' });
     }
-    const battle = {
-        id: (0, uuid_1.v4)(),
-        winnerId,
-        haikuAId: haikuIds[0],
-        haikuBId: haikuIds[1],
-        createdAt: new Date().toISOString(),
-    };
+    // Use the authenticated user as the voting winner.
+    const user = getUserFromToken(req);
+    if (!user)
+        return res.status(401).json({ error: 'Unauthorized' });
     // Verify haikus exist
     const [haikuA, haikuB] = haikuIds.map(id => haikus.find(h => h.id === id));
     if (!haikuA || !haikuB) {
         return res.status(404).json({ error: 'One or both haikus not found' });
     }
-    // Verify winner is one of the haikus
+    // Verify winnerId matches one of the haiku IDs (client may send the haiku id)
     if (!haikuIds.includes(winnerId)) {
         return res.status(400).json({ error: 'Winner must be one of selected haikus' });
     }
+    const battle = {
+        id: (0, uuid_1.v4)(),
+        winnerId: user.id, // Store user ID as the winner
+        haikuAId: haikuIds[0],
+        haikuBId: haikuIds[1],
+        createdAt: new Date().toISOString(),
+    };
     battles.push(battle);
-    // Award a point to the owner of the winning haiku.
-    const winningHaiku = haikus.find(h => h.id === winnerId);
-    if (winningHaiku) {
-        const owner = users.find(u => u.id === winningHaiku.userId);
-        if (owner)
-            owner.points += 1;
-    }
-    // Also award a point to the user who submitted the battle (for
-    // demo purposes). If the token does not resolve to a user, skip.
-    const submittingUser = getUserFromToken(req);
-    if (submittingUser) {
-        submittingUser.points += 1;
-    }
+    // Award a point to the authenticated user.
+    user.points += 1;
     // Enqueue aggregation job – the worker will persist points to DB.
-    // Send the *user* ID of the winner for clarity.
-    const winnerUserId = winningHaiku?.userId;
-    queue_1.scoreAggregationQueue.add('aggregate', {
-        winnerUserId,
+    await queue_1.scoreAggregationQueue.add('aggregate', {
+        winnerUserId: user.id,
         createdAt: battle.createdAt,
     });
+    console.log(`Battle recorded: ${JSON.stringify(battle)}`);
+    // Invalidate leaderboard caches
+    try {
+        await redisInstance_1.default.del(`leaderboard:daily`, `leaderboard:weekly`, `leaderboard:monthly`, `leaderboard:all`);
+    }
+    catch (_) { }
     res.json(battle);
 });
 // --- Leaderboard ----------------------------
-app.get('/api/leaderboard', (req, res) => {
-    // For simplicity, return the leaderboard sorted by the users' current point
-    // totals. This aligns with test expectations which check the points
-    // field on the leaderboard response.
-    const sorted = users.slice().sort((a, b) => b.points - a.points);
-    const leaderboard = sorted.map((u, idx) => ({
-        rank: idx + 1,
-        userId: u.id,
-        email: u.email,
-        points: u.points,
-    }));
+app.get('/api/leaderboard', async (req, res) => {
+    const period = req.query.period;
+    const cacheKey = `leaderboard:${period ?? 'all'}`;
+    const ttlSeconds = 60;
+    try {
+        const cached = await redisInstance_1.default.get(cacheKey);
+        if (cached) {
+            return res.json(JSON.parse(cached));
+        }
+    }
+    catch (_) { }
+    const now = new Date();
+    let startDate = null;
+    if (period === 'daily') {
+        startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())); // midnight UTC
+    }
+    else if (period === 'weekly') {
+        // ISO week starts Monday
+        const day = now.getUTCDay();
+        const diff = (day + 6) % 7; // days since Monday
+        startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - diff));
+    }
+    else if (period === 'monthly') {
+        startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+    }
+    const pointsMap = {};
+    users.forEach(u => (pointsMap[u.id] = 0));
+    battles.forEach(b => {
+        if (startDate && new Date(b.createdAt) < startDate)
+            return;
+        pointsMap[b.winnerId] = (pointsMap[b.winnerId] ?? 0) + 1;
+    });
+    const sorted = Object.entries(pointsMap)
+        .map(([id, pts]) => ({ id, pts }))
+        .sort((a, b) => b.pts - a.pts);
+    const leaderboard = sorted.map((u, idx) => {
+        const user = users.find(u2 => u2.id === u.id);
+        return {
+            rank: idx + 1,
+            userId: u.id,
+            email: user ? user.email : 'unknown',
+            points: u.pts,
+        };
+    });
+    try {
+        await redisInstance_1.default.set(cacheKey, JSON.stringify(leaderboard), 'EX', ttlSeconds);
+    }
+    catch (_) { }
     res.json(leaderboard);
 });
 // --- Authenticated user profile ----------------------------
@@ -198,13 +234,28 @@ app.get('/api/points', (req, res) => {
     const user = users.find(u => u.id === userId);
     if (!user)
         return res.status(404).json({ error: 'User not found' });
-    // For test consistency, report the user's current point total and
-    // approximate weekly/monthly counts based on point history. Since we
-    // don't persist history, the weekly/monthly values are derived from
-    // the full total for this simplified implementation.
-    res.json({ totalPoints: user.points, weekPoints: user.points, monthPoints: user.points });
+    const now = new Date();
+    const weekStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    const diff = (now.getUTCDay() + 6) % 7;
+    weekStart.setUTCDate(weekStart.getUTCDate() - diff);
+    const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+    let total = 0, week = 0, month = 0;
+    battles.forEach(b => {
+        if (b.winnerId !== userId)
+            return;
+        total += 1;
+        const bd = new Date(b.createdAt);
+        if (bd >= weekStart)
+            week += 1;
+        if (bd >= monthStart)
+            month += 1;
+    });
+    res.json({ totalPoints: total, weekPoints: week, monthPoints: month });
 });
 const PORT = process.env.PORT || 3001;
 if (process.env.NODE_ENV !== 'test') {
-    app.listen(PORT, () => console.log(`Haiku Battle League API listening on port ${PORT}`));
+    app.listen(PORT, () => {
+        console.log(`Haiku Battle League API listening on port ${PORT}`);
+        (0, cron_1.scheduleDailyWinnerJob)();
+    });
 }

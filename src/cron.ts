@@ -3,10 +3,20 @@ import connection from './redisClient';
 
 /**
  * Queue that receives jobs to compute daily leaderboard winners.
+ * When Redis is not available (i.e., in test environments), a lightweight
+ * stub is used that simply discards jobs. This prevents the server from
+ * attempting to connect to a non‑existent Redis instance.
  */
-const dailyWinnerQueue = new Queue('daily-winner', {
-  connection,
-});
+let dailyWinnerQueue: any;
+if (process.env.USE_REDIS === '1') {
+  dailyWinnerQueue = new Queue('daily-winner', {
+    connection,
+  });
+} else {
+  dailyWinnerQueue = {
+    add: () => Promise.resolve(undefined),
+  };
+}
 
 /**
  * Schedule a job that adds a `daily-winner` job to the queue once per
@@ -38,4 +48,3 @@ export function scheduleDailyWinnerJob() {
     `Daily winner job will run in ${Math.round(delayMs / 1000)} seconds`
   );
 }
-

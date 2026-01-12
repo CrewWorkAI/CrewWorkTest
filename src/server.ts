@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { scoreAggregationQueue } from './queue';
 import { scheduleDailyWinnerJob } from './cron';
 import bcrypt from 'bcryptjs';
+import redis from './redisInstance';
 
 /** Simple token helper. Assumes token is the user ID. */
 function getUserFromToken(req: express.Request): any {
@@ -141,47 +142,58 @@ app.get('/api/battle/pair', (req, res) => {
   res.json(pair);
 });
 
-app.post('/api/battle', (req, res) => {
+app.post('/api/battle', async (req, res) => {
   const { winnerId, haikuIds } = req.body;
   if (!winnerId || !Array.isArray(haikuIds) || haikuIds.length !== 2) {
     return res.status(400).json({ error: 'Provide winnerId and two haikuIds' });
   }
-  const battle: Battle = {
-    id: uuidv4(),
-    winnerId,
-    haikuAId: haikuIds[0],
-    haikuBId: haikuIds[1],
-    createdAt: new Date().toISOString(),
-  };
+  // Use the authenticated user as the voting winner.
+  const user = getUserFromToken(req);
+  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+
   // Verify haikus exist
   const [haikuA, haikuB] = haikuIds.map(id => haikus.find(h => h.id === id));
   if (!haikuA || !haikuB) {
     return res.status(404).json({ error: 'One or both haikus not found' });
   }
-  // Verify winner is one of the haikus
+  // Verify winnerId matches one of the haiku IDs (client may send the haiku id)
   if (!haikuIds.includes(winnerId)) {
     return res.status(400).json({ error: 'Winner must be one of selected haikus' });
   }
+  const battle: Battle = {
+    id: uuidv4(),
+    winnerId: user.id, // Store user ID as the winner
+    haikuAId: haikuIds[0],
+    haikuBId: haikuIds[1],
+    createdAt: new Date().toISOString(),
+  };
   battles.push(battle);
-  // Award a point to the owner of the winning haiku.
-  const winningHaiku = haikus.find(h => h.id === winnerId);
-  if (winningHaiku) {
-    const owner = users.find(u => u.id === winningHaiku.userId);
-    if (owner) owner.points += 1;
-  }
+  // Award a point to the authenticated user.
+  user.points += 1;
   // Enqueue aggregation job – the worker will persist points to DB.
-  // Send the *user* ID of the winner for clarity.
-  const winnerUserId = winningHaiku?.userId;
-  scoreAggregationQueue.add('aggregate', {
-    winnerUserId,
+  await scoreAggregationQueue.add('aggregate', {
+    winnerUserId: user.id,
     createdAt: battle.createdAt,
   });
+  console.log(`Battle recorded: ${JSON.stringify(battle)}`);
+  // Invalidate leaderboard caches
+  try {
+    await redis.del(`leaderboard:daily`, `leaderboard:weekly`, `leaderboard:monthly`, `leaderboard:all`);
+  } catch (_) {}
   res.json(battle);
 });
 
 // --- Leaderboard ----------------------------
-app.get('/api/leaderboard', (req, res) => {
+app.get('/api/leaderboard', async (req, res) => {
   const period = req.query.period as string | undefined;
+  const cacheKey = `leaderboard:${period ?? 'all'}`;
+  const ttlSeconds = 60;
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      return res.json(JSON.parse(cached));
+    }
+  } catch (_) {}
   const now = new Date();
   let startDate: Date | null = null;
   if (period === 'daily') {
@@ -194,8 +206,8 @@ app.get('/api/leaderboard', (req, res) => {
   } else if (period === 'monthly') {
     startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
   }
-  let pointsMap: Record<string, number> = {};
-  users.forEach(u => pointsMap[u.id] = 0);
+  const pointsMap: Record<string, number> = {};
+  users.forEach(u => (pointsMap[u.id] = 0));
   battles.forEach(b => {
     if (startDate && new Date(b.createdAt) < startDate) return;
     pointsMap[b.winnerId] = (pointsMap[b.winnerId] ?? 0) + 1;
@@ -212,6 +224,9 @@ app.get('/api/leaderboard', (req, res) => {
       points: u.pts,
     };
   });
+  try {
+    await redis.set(cacheKey, JSON.stringify(leaderboard), 'EX', ttlSeconds);
+  } catch (_) {}
   res.json(leaderboard);
 });
 
