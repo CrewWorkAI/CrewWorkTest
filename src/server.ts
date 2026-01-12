@@ -190,7 +190,13 @@ app.post('/api/battle', async (req, res) => {
 app.get('/api/leaderboard', async (req, res) => {
   const period = req.query.period as string | undefined;
   const cacheKey = `leaderboard:${period ?? 'all'}`;
-  const ttlSeconds = 60;
+  /**
+   * Cache TTL for leaderboard results.  Keep a small value to ensure the
+   * data stays fresh for a highly‑write system, but configurable via
+   * `LEADERBOARD_TTL_SECONDS` for easier tuning in prod.  Default to 60
+   * seconds which is sufficient for the MVP.
+   */
+  const ttlSeconds = parseInt(process.env.LEADERBOARD_TTL_SECONDS ?? '60', 10);
   try {
     const cached = await redis.get(cacheKey);
     if (cached) {
