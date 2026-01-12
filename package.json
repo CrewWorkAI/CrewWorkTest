@@ -40,6 +40,6 @@
     "nodemon": "^3.0.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5",
-    "artillery": "^2.42.0"
+    "artillery": "^2.0.27"
   }
 }
