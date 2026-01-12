@@ -2,64 +2,30 @@
   "version": "1.0",
   "tasks": [
     {
-      "id": "6.1",
+      "id": "7.1",
       "description": "Implement frontend UI for haiku battles, leaderboards, and daily winners",
-      "status": "completed",
+      "status": "in_progress",
       "priority": 1,
       "effort_hours": 15,
-      "started_at": "2026-01-12T22:09:40.372626Z",
-      "completed_at": "2026-01-12T22:11:36.106105Z",
+      "started_at": "2026-01-12T22:17:27.514273Z",
+      "completed_at": null,
       "error": null,
-      "result_summary": "Now we added _app.tsx. We also added import for global.css but we may need that file. Next, we need create home page. Add pages/index.tsx with UI for battles, leaderboards. Add battle page or component. Let's inspect repo for UI design: currently only leaderboard, login, register. We'll need home page with battle start, show two haikus, vote.\n\nAlso need to add pages/register.tsx exists but we didn't confirm content. Not necessary.\n\nAlso create API requests? Already server endpoints exist. Need t",
-      "files_modified": [
-        ".crewwork/progress.md",
-        ".crewwork/state.json",
-        ".crewwork/tasks.json",
-        "frontend/pages/_app.tsx"
-      ],
+      "result_summary": null,
+      "files_modified": [],
       "workstream": null,
       "tags": []
     },
     {
-      "id": "6.2",
-      "description": "Conduct performance and load testing for 5-10M daily users",
-      "status": "completed",
+      "id": "7.2",
+      "description": "Conduct performance and load testing to demonstrate 5-10M daily users with acceptable latency",
+      "status": "planned",
       "priority": 2,
       "effort_hours": 12,
-      "started_at": "2026-01-12T22:11:36.122971Z",
-      "completed_at": "2026-01-12T22:14:00.734286Z",
+      "started_at": null,
+      "completed_at": null,
       "error": null,
-      "result_summary": "Task completed",
-      "files_modified": [
-        ".crewwork/progress.md",
-        ".crewwork/state.json",
-        ".crewwork/tasks.json",
-        "performance_tests/"
-      ],
-      "workstream": null,
-      "tags": []
-    },
-    {
-      "id": "6.3",
-      "description": "Containerize backend and frontend, deploy to Kubernetes with autoscaling and monitoring",
-      "status": "completed",
-      "priority": 3,
-      "effort_hours": 10,
-      "started_at": "2026-01-12T22:14:00.752172Z",
-      "completed_at": "2026-01-12T22:15:54.575818Z",
-      "error": null,
-      "result_summary": "**What was done**\n\n- Added **Prometheus monitoring** annotations and health probes to the backend and frontend deployments.\n- Enabled explicit **Pod annotations** so Prometheus can scrape metrics on the default port.\n- Added **liveness and readiness probes** pointing to a `/health` endpoint.\n- Updated both backend and frontend services to expose a named port `http` so that ServiceMonitors can target it reliably.\n- Created **ServiceMonitor** resources (`backend-service-monitor.yaml`, `frontend-se",
-      "files_modified": [
-        ".crewwork/progress.md",
-        ".crewwork/state.json",
-        ".crewwork/tasks.json",
-        "k8s/backend-deployment.yaml",
-        "k8s/backend-service-monitor.yaml",
-        "k8s/backend-service.yaml",
-        "k8s/frontend-deployment.yaml",
-        "k8s/frontend-service-monitor.yaml",
-        "k8s/frontend-service.yaml"
-      ],
+      "result_summary": null,
+      "files_modified": [],
       "workstream": null,
       "tags": []
     }

@@ -1,0 +1,129 @@
+/* Global stylesheet for Haiku Battle League
+ * This file imports the Montserrat font and sets base styles.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600\u0026display=swap');
+
+:root {
+  /* Color palette */
+  --color-primary: #0066cc;
+  --color-accent: #008080; /* muted teal */
+  --color-bg: #fafafa;
+  --color-text: #222222;
+  --color-muted: #666666;
+  --color-link: var(--color-primary);
+  --color-link-hover: #004999;
+  --color-border: #e0e0e0;
+}
+
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  height: 100%;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-size: 1rem;
+  overflow-x: hidden;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: color 150ms ease-in-out;
+}
+a:hover {
+  color: var(--color-link-hover);
+}
+
+/* Utility classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+}
+
+/* Typography */
+h1,h2,h3 {
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-weight: 600;
+}
+
+h1 {font-size: 2.5rem;}
+h2 {font-size: 2rem;}
+h3 {font-size: 1.75rem;}
+
+/* Responsive breakpoints */
+@media (min-width: 640px) {
+  .grid-sm { grid-template-columns: repeat(2,1fr); }
+}
+@media (min-width: 768px) {
+  .grid-md { grid-template-columns: repeat(3,1fr); }
+}
+@media (min-width: 1024px) {
+  .grid-lg { grid-template-columns: repeat(4,1fr); }
+}
+
+/* Button Styles */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 150ms ease-in-out;
+}
+.button:hover { background: var(--color-link-hover); }
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th,
+.table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+.table th {
+  font-weight: 600;
+}
+
+/* Card */
+.card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.card h4 {
+  margin-bottom: 8px;
+}
+.card p {
+  margin-bottom: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
