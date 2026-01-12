@@ -1,0 +1,16 @@
+[app]
+name = "haiku-battle"
+region = "sfo"
+image = "ghcr.io/${{ github.repository_owner }}/haiku-battle:latest"
+
+[build]
+dockerfile = "Dockerfile"
+
+[env]
+# Example: set required env vars for backend
+NODE_ENV = "production"
+PGHOST = "postgres-primary"
+PGPORT = "5432"
+PGUSER = "haiku_user"
+PGPASSWORD = "haiku_pass"
+PGDATABASE = "haiku"

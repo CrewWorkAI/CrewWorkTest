@@ -14,14 +14,14 @@
   "control": {},
   "budget": {
     "max_iterations": 1000,
-    "iterations_used": 3,
+    "iterations_used": 4,
     "max_tokens": 2000000,
-    "tokens_used": 5650,
+    "tokens_used": 6893,
     "max_time_minutes": 565,
     "started_at": "2026-01-12T21:29:29.293224Z"
   },
   "branch": null,
-  "last_checkpoint": "1b9a8f2",
+  "last_checkpoint": "90044a5",
   "checkpoint_commits": [
     "8fce2fe",
     "2cad372",
@@ -48,9 +48,10 @@
     "99205db",
     "7a85512",
     "4147bfc",
-    "1b9a8f2"
+    "1b9a8f2",
+    "90044a5"
   ],
-  "context_summary": "...\nTask 4.2: Implemented async job processing for vote tallying and daily winner computation:\n\n- **Queue Integration**\n  - `src/queue.ts` now uses BullMQ for real queue when `USE_REDIS=1`; otherwise a lightweight  (artifact: artifact://conversation/669f9866-20a2-434a-8ec9-e963378b955b/69ee0045-8737-4ae7-b33f-007588fc1ed5)\nTask 4.1: Implemented a complete core backend for Haiku Battle League with full integration test coverage:\n\n### Key Features\n- **Endpoints**  \n  \u2022 `POST /api/auth/register` & `login`  \n  \u2022 `POST /api/haiku` (us (artifact: artifact://conversation/c6371152-ae10-4548-86ab-b953db627a82/446f39ac-1582-4038-b9ac-b374a0ae431c)\nTask 4.2: Implemented async job processing:\n\n- **Bootstrapped workers** \u2013 Added imports for `dailyWinnerWorker` and `scoreAggregationWorker` in `src/server.ts` so BullMQ workers start automatically when the ser (artifact: artifact://conversation/f3c2a5dc-bd31-417d-a7b7-8ea434d24465/e1ea7213-9172-421c-ae40-656282d4973a)\nTask 4.1: Implemented the core backend APIs for Haiku submission, voting, and leaderboard retrieval along with comprehensive integration tests.  \nAll APIs are available:\n\n- **Auth** \u2013 register, login, authentic (artifact: artifact://conversation/16890c87-004e-4e8e-9f7b-6dff62bdc5e0/fee2a253-681c-42fb-8857-e1b477f8ffa5)\nTask 4.2: Implemented async job processing for vote tallying and daily winner calculation:\n\n- **Crontab**: Added `scheduleDailyWinnerJob` in `src/cron.ts` to enqueue `daily-winner` jobs at UTC midnight and then (artifact: artifact://conversation/a091196d-56da-4010-addd-4b5033d6b251/f905bf11-3f56-48c2-862d-b79727921a5f)\nTask 4.3: Implemented enhanced leaderboard caching:\n\n- Added configurable `LEADERBOARD_TTL_SECONDS` environment variable with a default of 60 seconds.\n- Updated leaderboard endpoint to utilize this TTL value an (artifact: artifact://conversation/8922c155-5ba6-4fbc-8725-6334cb477a00/6e32b0fc-316b-4b4d-a10e-9aa963a59aa3)",
+  "context_summary": "...\nTask 4.1: Implemented a complete core backend for Haiku Battle League with full integration test coverage:\n\n### Key Features\n- **Endpoints**  \n  \u2022 `POST /api/auth/register` & `login`  \n  \u2022 `POST /api/haiku` (us (artifact: artifact://conversation/c6371152-ae10-4548-86ab-b953db627a82/446f39ac-1582-4038-b9ac-b374a0ae431c)\nTask 4.2: Implemented async job processing:\n\n- **Bootstrapped workers** \u2013 Added imports for `dailyWinnerWorker` and `scoreAggregationWorker` in `src/server.ts` so BullMQ workers start automatically when the ser (artifact: artifact://conversation/f3c2a5dc-bd31-417d-a7b7-8ea434d24465/e1ea7213-9172-421c-ae40-656282d4973a)\nTask 4.1: Implemented the core backend APIs for Haiku submission, voting, and leaderboard retrieval along with comprehensive integration tests.  \nAll APIs are available:\n\n- **Auth** \u2013 register, login, authentic (artifact: artifact://conversation/16890c87-004e-4e8e-9f7b-6dff62bdc5e0/fee2a253-681c-42fb-8857-e1b477f8ffa5)\nTask 4.2: Implemented async job processing for vote tallying and daily winner calculation:\n\n- **Crontab**: Added `scheduleDailyWinnerJob` in `src/cron.ts` to enqueue `daily-winner` jobs at UTC midnight and then (artifact: artifact://conversation/a091196d-56da-4010-addd-4b5033d6b251/f905bf11-3f56-48c2-862d-b79727921a5f)\nTask 4.3: Implemented enhanced leaderboard caching:\n\n- Added configurable `LEADERBOARD_TTL_SECONDS` environment variable with a default of 60 seconds.\n- Updated leaderboard endpoint to utilize this TTL value an (artifact: artifact://conversation/8922c155-5ba6-4fbc-8725-6334cb477a00/6e32b0fc-316b-4b4d-a10e-9aa963a59aa3)\nTask 4.4: **Updates Overview**\n\n- **`src/db.ts`** \u2013 Added separate read/write PostgreSQL connection pools with `getPool(isRead)` helper. Primary pool is default export. Replica pool created when `PGHOST_REPLICA (artifact: artifact://conversation/8321dc4d-4a90-46ab-8fc1-efd011501e1a/a0a29480-d592-465a-8771-80e34ba0db30)",
   "created_at": "2026-01-12T18:56:46.990234Z",
-  "updated_at": "2026-01-12T21:37:14.446464Z"
+  "updated_at": "2026-01-12T21:40:21.952502Z"
 }
