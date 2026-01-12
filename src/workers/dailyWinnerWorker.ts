@@ -8,9 +8,10 @@ import pool from '../db';
  * The worker queries the `daily_points` table and inserts the top user
  * into the `daily_winners` table.
  */
-const worker = new Worker(
-  'daily-winner',
-  async (job: Job) => {
+const worker = process.env.USE_REDIS === '1'
+  ? new Worker(
+      'daily-winner',
+      async (job: Job) => {
     const { date } = job.data as { date: string };
     const client = await pool.connect();
     try {
@@ -35,12 +36,17 @@ const worker = new Worker(
     } finally {
       client.release();
     }
-  },
-  { connection }
-);
+      },
+      { connection }
+    )
+  : {
+      /**
+       * Dummy worker mimicking the event interface of bullmq's Worker.
+       */
+      on: () => {},
+    };
 
 worker.on('completed', (job) => console.log(`Daily winner job ${job.id} completed`));
 worker.on('failed', (job, err) => console.error('Daily winner job failed:', err));
 
 export default worker;
-

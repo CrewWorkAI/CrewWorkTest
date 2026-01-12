@@ -15,9 +15,13 @@ function getWeekStart(date: Date): string {
 
 // QueueScheduler is optional; if you require delayed job handling, add it.
 
-const worker = new Worker(
-  'score-aggregation',
-  async (job: Job) => {
+// Only instantiate a real worker when redis is available. In test
+// environments we fall back to a dummy no‑op worker to avoid connection
+// errors. This matches the behavior of the queue implementation.
+const worker = process.env.USE_REDIS === '1'
+  ? new Worker(
+      'score-aggregation',
+      async (job: Job) => {
     const { winnerUserId, createdAt } = job.data as { winnerUserId: string; createdAt: string };
     const battleDate = new Date(createdAt);
     const day = battleDate.toISOString().slice(0, 10); // YYYY-MM-DD
@@ -49,9 +53,17 @@ const worker = new Worker(
     } finally {
       client.release();
     }
-  },
-  { connection }
-);
+      },
+      { connection }
+    )
+  : {
+      /**
+       * Dummy worker that satisfies the interface required by the rest of the
+       * application. Listener registration is a no‑op; the worker never emits
+       * events.
+       */
+      on: () => {},
+    };
 
 worker.on('completed', (job) => console.log(`Job ${job.id} completed`));
 worker.on('failed', (job, err) => console.error(`Job ${job?.id} failed:`, err));
