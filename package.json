@@ -10,6 +10,7 @@
     "worker": "node dist/workers/scoreAggregationWorker.js",
     "worker-dev": "ts-node-dev --respawn src/workers/scoreAggregationWorker.ts",
     "test": "jest && node test/integration.test.js",
+    "e2e": "node test/integration.test.js",
     "loadtest": "artillery run loadtests/artillery.yml"
   },
   "keywords": [
@@ -58,6 +59,7 @@
     "@types/jest": "^29.5.12",
     "@testing-library/react": "^14.0.0",
     "@testing-library/jest-dom": "^6.0.0",
-    "identity-obj-proxy": "^3.0.0"
+    "identity-obj-proxy": "^3.0.0",
+    "playwright": "^1.48.0"
   }
 }
