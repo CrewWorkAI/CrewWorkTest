@@ -10,6 +10,9 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const uuid_1 = require("uuid");
 const queue_1 = require("./queue");
 const cron_1 = require("./cron");
+// Import worker modules to start BullMQ workers upon server boot.
+require("./workers/dailyWinnerWorker");
+require("./workers/scoreAggregationWorker");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const redisInstance_1 = __importDefault(require("./redisInstance"));
 /** Simple token helper. Assumes token is the user ID. */
@@ -167,7 +170,13 @@ app.post('/api/battle', async (req, res) => {
 app.get('/api/leaderboard', async (req, res) => {
     const period = req.query.period;
     const cacheKey = `leaderboard:${period ?? 'all'}`;
-    const ttlSeconds = 60;
+    /**
+     * Cache TTL for leaderboard results.  Keep a small value to ensure the
+     * data stays fresh for a highly‑write system, but configurable via
+     * `LEADERBOARD_TTL_SECONDS` for easier tuning in prod.  Default to 60
+     * seconds which is sufficient for the MVP.
+     */
+    const ttlSeconds = parseInt(process.env.LEADERBOARD_TTL_SECONDS ?? '60', 10);
     try {
         const cached = await redisInstance_1.default.get(cacheKey);
         if (cached) {

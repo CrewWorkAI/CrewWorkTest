@@ -8,6 +8,17 @@ This repository holds the **product specification** and initial scaffolding for 
 
 Feel free to read `FEATURE_REQUIREMENTS.md` for detailed design, data models, API surface, frontend flow, scaling notes, and a growth path.
 
+### PostgreSQL High‑Availability Setup
+The repository includes a `docker-compose.yml` that launches a primary PostgreSQL instance together with a hot‑standby replica. This provides read replicas for load‑balancing and fail‑over support.
+To start the stack locally:
+
+```bash
+docker compose up -d
+```
+
+Your application connects to the primary instance through the standard `PG*` environment variables.
+If you set `PGHOST_REPLICA` it will use that host for read‑only connections.
+
 ### Quick Run
 ```bash
 npm install

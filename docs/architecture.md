@@ -1,75 +1,50 @@
-# Haiku Battle League Architecture
+# High‑Availability Database Architecture
 
-Below is a high‑level architecture diagram for the MVP. The diagram is expressed using **Mermaid** syntax so it can be rendered by any Markdown viewer that supports Mermaid.
+## Overview
+The application runs behind a **primary PostgreSQL** instance that
+handles all write traffic (account creation, haiku submissions, battle
+completions, etc.).  A **hot‑standby replica** receives WAL shipping
+from the master and serves read‑only traffic.  Query routing is
+controlled by the application – we expose two pools:
 
-```mermaid
-%%{init: { 'theme': 'neutral', 'fontFamily': 'sans-serif', 'flowchart': { 'curve': 'basis' } } }%%
-flowchart TD
-    subgraph Frontend
-        FE["React/WebAssembly frontend (Vercel Cloudflare CDN)"
-            style FE fill:#f9f,stroke:#333,stroke-width:2px]
-    end
+* **writePool** – used for all mutations.
+* **readPool**  – used for leaderboard or analytics reads.
 
-    subgraph Auth
-        AuthService["Auth Service (OAuth, JWT)"
-            style AuthService fill:#afa,stroke:#333,stroke-width:2px]
-    end
+By default the replica pool is optional; if `PGHOST_REPLICA` is not
+defined the app falls back to the primary pool.
 
-    subgraph APIs
-        API["Gateway API (NGINX + FastAPI)
-            style API fill:#ddf,stroke:#333,stroke-width:2px]
-    end
+## Deployment Steps
+1. **Spin up the stack** using the supplied `docker-compose.yml`.
+2. **Run migrations**. The initial SQL file (`migrations/000_initial.sql`)
+   contains all necessary tables, indexes, and functions.  If you need to
+   automate migrations for production, consider tools like `node-pg-migrate`
+   or execute `psql -f migrations/000_initial.sql` against the primary.
+3. **Configure environment** for your runtime:
 
-    subgraph Services
-        Backend["Auth Service, Haiku Service, Battle Service, Leaderboard Service, Points Service (micro‑services)"
-            style Backend fill:#eef,stroke:#333,stroke-width:2px]
-        Worker["BullMQ/Redis Workers
-            style Worker fill:#ffd,stroke:#333,stroke-width:2px]
-    end
+   ```env
+   PGHOST=haiku_primary
+   PGPORT=5432
+   PGUSER=haiku_user
+   PGPASSWORD=haiku_pass
+   PGDATABASE=haiku
+   PGHOST_REPLICA=haiku_replica
+   ```
 
-    subgraph Storage
-        Postgres["PostgreSQL (cluster, partitioned tables)"
-            style Postgres fill:#fdd,stroke:#333,stroke-width:2px]
-        Redis["Redis (caching, queue, pub/sub)"
-            style Redis fill:#dff,stroke:#333,stroke-width:2px]
-    end
+4. **Scale** the replica by replicating the same command in a new
+   container or in a managed cluster (e.g., RDS, Cloud SQL).  Add more
+   read workers if you hit read saturation.
 
-    FE --> AuthService
-    FE --> API
-    AuthService --> Backend
-    API --> Backend
-    API --> Worker
-    Backend --> Postgres
-    Backend --> Redis
-    Worker --> Postgres
-    Worker --> Redis
-    FE <-- CDN["CDN (Vercel/CloudFront)"
-        style CDN fill:#fcf,stroke:#333,stroke-width:2px]
-    CDN --> FE
+## Read‑Write Separation Example
+```ts
+import { getPool } from '../db';
 
-    subgraph Monitoring
-        Prom["Prometheus + Grafana"
-            style Prom fill:#eef,stroke:#333,stroke-width:2px]
-        Loki["Loki for logs"
-            style Loki fill:#eef,stroke:#333,stroke-width:2px]
-    end
+// Mutation
+await getPool(false).query('INSERT INTO users ...');
 
-    API --> Prom
-    Backend --> Prom
-    API --> Loki
-    Backend --> Loki
+// Read
+const res = await getPool(true).query('SELECT * FROM leaderboards');
 ```
 
-## Component Overview
-
-* **Frontend** – Single‑page application delivering battle UI, leaderboard, submission forms. Built with React and served from a CDN.
-* **Auth Service** – Handles user accounts, OAuth integrations, JWT issuance.
-* **Gateway API** – Rate‑limited reverse proxy exposing REST + WebSocket endpoints. Implements authentication guards.
-* **Micro‑services** – Each domain (haiku, battle, leaderboard, points) runs as an isolated process or Kubernetes pod. They all share the same PostgreSQL cluster.
-* **Workers** – Long‑running background jobs (point calculations, weekly aggregation). Powered by BullMQ over Redis.
-* **Cache** – Redis stores hot leaderboards, battle queues, and short‑lived auth tokens. PostgreSQL is the source of truth.
-* **Monitoring** – Prometheus collects metrics from services, Grafana visualizes them. Loki aggregates structured logs.
-* **Deployment** – Services containerised with Docker, orchestrated via Kubernetes on Render or DigitalOcean. CI/CD via GitHub Actions.
-
-This architecture is designed to scale to 5‑10 M daily active users, with auto‑scaling of API pods, worker queues, and stateless frontend.
+This approach keeps the write pool isolated and lets the replica keep
+the load light, giving higher uptime.
 

@@ -1,0 +1,61 @@
+version: "3.8"
+services:
+  postgres-primary:
+    image: postgres:15-alpine
+    container_name: haiku_primary
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: haiku_user
+      POSTGRES_PASSWORD: haiku_pass
+      POSTGRES_DB: haiku
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    volumes:
+      - pg_primary_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U haiku_user -d haiku"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-replica:
+    image: postgres:15-alpine
+    container_name: haiku_replica
+    restart: unless-stopped
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    environment:
+      POSTGRES_USER: haiku_user
+      POSTGRES_PASSWORD: haiku_pass
+      POSTGRES_DB: haiku
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    command: >
+      sh -c "
+        echo 'Creating replication user' &&
+        psql -U haiku_user -d haiku -c "CREATE USER replication_user REPLICATION LOGIN ENCRYPTED PASSWORD 'replica_pass';" &&
+        echo 'Starting replication setup' &&
+        pg_basebackup -h postgres-primary -U replication_user -D /var/lib/postgresql/data -Fp -Xs -P &&
+        echo 'replication: true' >> /var/lib/postgresql/data/postgresql.conf &&
+        echo "wal_level = replica" >> /var/lib/postgresql/data/postgresql.conf &&
+        echo "max_wal_senders = 5" >> /var/lib/postgresql/data/postgresql.conf &&
+        echo "hot_standby = on" >> /var/lib/postgresql/data/postgresql.conf &&
+        echo 'standby_mode = "on"' >> /var/lib/postgresql/data/pg_hba.conf &&
+        echo "host replication replication_user postgres-primary 0.0.0.0/0 scram-sha-256" >> /var/lib/postgresql/data/pg_hba.conf &&
+        postgres
+      "
+    volumes:
+      - pg_repl_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U haiku_user -d haiku"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pg_primary_data:
+  pg_repl_data:
+
