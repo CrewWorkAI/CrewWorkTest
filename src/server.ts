@@ -5,6 +5,16 @@ import { v4 as uuidv4 } from 'uuid';
 import { scoreAggregationQueue } from './queue';
 import bcrypt from 'bcryptjs';
 
+/** Simple token helper. Assumes token is the user ID. */
+function getUserFromToken(req: express.Request): any {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+  const token = authHeader.slice(7).trim();
+  return users.find((u) => u.id === token) || null;
+}
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -54,7 +64,8 @@ app.post('/api/auth/register', async (req, res) => {
     updatedAt: new Date().toISOString(),
   };
   users.push(user);
-  res.json({ userId: user.id });
+  // Return auth token (user id for demo)
+  res.json({ userId: user.id, token: user.id });
 });
 
 app.post('/api/auth/login', async (req, res) => {
@@ -69,11 +80,14 @@ app.post('/api/auth/login', async (req, res) => {
 
 // --- Haiku CRUD ----------------------------
 app.post('/api/haiku', (req, res) => {
-  const { userId, text } = req.body;
-  if (!userId || !text) return res.status(400).json({ error: 'Missing userId or text' });
+  // Require authentication
+  const user = getUserFromToken(req);
+  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+  const { text } = req.body;
+  if (!text) return res.status(400).json({ error: 'Missing text' });
   const haiku: Haiku = {
     id: uuidv4(),
-    userId,
+    userId: user.id,
     text,
     createdAt: new Date().toISOString(),
   };
