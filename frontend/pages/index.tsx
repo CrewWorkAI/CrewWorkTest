@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
 
 export default function Home() {
   const [haikus, setHaikus] = useState<Array<{ id: string; text: string }>>([]);
@@ -74,6 +75,11 @@ export default function Home() {
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <h1>Haiku Battle League</h1>
+      <p>
+        <Link href="/leaderboard">
+          <a style={{ color: '#0066cc', textDecoration: 'underline' }}>View Leaderboard</a>
+        </Link>
+      </p>
       <p>Welcome to head‑to‑head haiku battles!</p>
       <section style={{ marginBottom: '2rem' }}>
         <h2>User Auth</h2>
