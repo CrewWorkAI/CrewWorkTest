@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { v4 as uuidv4 } from 'uuid';
 import { scoreAggregationQueue } from './queue';
+import { scheduleDailyWinnerJob } from './cron';
 import bcrypt from 'bcryptjs';
 
 /** Simple token helper. Assumes token is the user ID. */
@@ -250,7 +251,10 @@ app.get('/api/points', (req, res) => {
 
 const PORT = process.env.PORT || 3001;
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => console.log(`Haiku Battle League API listening on port ${PORT}`));
+  app.listen(PORT, () => {
+    console.log(`Haiku Battle League API listening on port ${PORT}`);
+    scheduleDailyWinnerJob();
+  });
 }
 
 // Export app for testing purposes

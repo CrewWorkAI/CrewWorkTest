@@ -6,6 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.scoreAggregationQueue = void 0;
 const bullmq_1 = require("bullmq");
 const redisClient_1 = __importDefault(require("./redisClient"));
-exports.scoreAggregationQueue = new bullmq_1.Queue('score-aggregation', {
-    connection: redisClient_1.default,
-});
+exports.scoreAggregationQueue = process.env.USE_REDIS === '1'
+  ? new bullmq_1.Queue('score-aggregation', {
+      connection: redisClient_1.default,
+    })
+  : {
+      add: async (_, payload) => Promise.resolve({ id: 'fake-job-id', ...payload }),
+    };

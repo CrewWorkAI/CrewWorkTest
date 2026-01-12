@@ -2,21 +2,22 @@ import { Queue } from 'bullmq';
 import connection from './redisClient';
 
 /**
- * A lightweight stub queue used during testing or when Redis is not
- * available.  It mimics the minimal interface of BullMQ's `Queue` for
- * enqueueing jobs.
+ * A lightweight fake queue for use in the test environment. It exposes the
+ * same `add` method but performs no network I/O.
  */
 class FakeQueue {
   async add(_: string, payload: any) {
-    // no-op: pretend success by returning a pseudo job reference
     return Promise.resolve({ id: 'fake-job-id', ...payload });
   }
 }
 
 /**
- * In this simplified MVP we use the fake queue unconditionally. It
- * provides the same `add` interface but performs no network I/O.  For
- * a production deployment you could expose an environment flag to switch
- * to the real BullMQ queue.
+ * Either the real BullMQ queue or a fake implementation depending on the
+ * environment. Tests do not run a redis server so we fall back to the fake
+ * queue when NODE_ENV is set to 'test'.
  */
-export const scoreAggregationQueue = new FakeQueue();
+export const scoreAggregationQueue = process.env.USE_REDIS === '1'
+  ? new Queue('score-aggregation', {
+      connection,
+    })
+  : new FakeQueue();
