@@ -18,11 +18,18 @@ if (process.env.USE_REDIS === '1') {
     retryStrategy: () => null,
   });
   redis.on('error', () => {});
-} else {
+  } else {
   redis = {
     get: async (_: string) => null,
     set: async (_: string, __: string, ___: string, ____: number) => null,
     del: async (..._args: string[]) => null,
+    /**
+     * Unsupported operations in the stub. We provide no‑op promises for
+     * ZADD and ZREVRANGE so that application code can call them without
+     * breaking in test environments.
+     */
+    zadd: async (_: string, __: number, ___: string) => null,
+    zrevrange: async (_: string, __: number, ___: number, ____: { withscores?: boolean } | undefined) => [],
   };
 }
 
