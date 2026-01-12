@@ -42,14 +42,24 @@
     {
       "id": "6.3",
       "description": "Containerize backend and frontend, deploy to Kubernetes with autoscaling and monitoring",
-      "status": "in_progress",
+      "status": "completed",
       "priority": 3,
       "effort_hours": 10,
       "started_at": "2026-01-12T22:14:00.752172Z",
-      "completed_at": null,
+      "completed_at": "2026-01-12T22:15:54.575818Z",
       "error": null,
-      "result_summary": null,
-      "files_modified": [],
+      "result_summary": "**What was done**\n\n- Added **Prometheus monitoring** annotations and health probes to the backend and frontend deployments.\n- Enabled explicit **Pod annotations** so Prometheus can scrape metrics on the default port.\n- Added **liveness and readiness probes** pointing to a `/health` endpoint.\n- Updated both backend and frontend services to expose a named port `http` so that ServiceMonitors can target it reliably.\n- Created **ServiceMonitor** resources (`backend-service-monitor.yaml`, `frontend-se",
+      "files_modified": [
+        ".crewwork/progress.md",
+        ".crewwork/state.json",
+        ".crewwork/tasks.json",
+        "k8s/backend-deployment.yaml",
+        "k8s/backend-service-monitor.yaml",
+        "k8s/backend-service.yaml",
+        "k8s/frontend-deployment.yaml",
+        "k8s/frontend-service-monitor.yaml",
+        "k8s/frontend-service.yaml"
+      ],
       "workstream": null,
       "tags": []
     }
