@@ -1,0 +1,379 @@
+openapi: 3.1.0
+info:
+  title: Haiku Battle League API
+  version: 1.0.0
+  description: >
+    The public REST API for Haiku Battle League – a platform where users post haikus, vote on random duels, and earn points. The spec includes authentication, submission, battle flow, leaderboard queries, points aggregation, and content moderation endpoints.
+
+servers:
+  - url: https://api.haikubattle.com/v1
+    description: Production server
+  - url: http://localhost:3001/v1
+    description: Local development
+
+tags:
+  - name: Auth
+    description: User registration and authentication
+  - name: Haiku
+    description: Haiku submission, retrieval, and moderation
+  - name: Battle
+    description: Battle creation and result submission
+  - name: Leaderboard
+    description: Ranking queries
+  - name: Points
+    description: User points aggregation
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        points:
+          type: integer
+          minimum: 0
+      required:
+        - id
+        - email
+        - points
+    Haiku:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        text:
+          type: string
+        lines:
+          type: integer
+          minimum: 1
+          maximum: 3
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - text
+        - lines
+        - createdAt
+    Battle:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        haikuAId:
+          type: string
+          format: uuid
+        haikuBId:
+          type: string
+          format: uuid
+        winnerId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - haikuAId
+        - haikuBId
+        - winnerId
+        - createdAt
+    PointAggregation:
+      type: object
+      properties:
+        totalPoints:
+          type: integer
+        weekPoints:
+          type: integer
+        monthPoints:
+          type: integer
+      required:
+        - totalPoints
+        - weekPoints
+        - monthPoints
+    Report:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        haikuId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        reason:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - haikuId
+        - userId
+        - reason
+        - createdAt
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        "201":
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                required:
+                  - userId
+        "400":
+          description: Validation error
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                required:
+                  - userId
+        "401":
+          description: Invalid credentials
+
+  /haiku:
+    post:
+      tags:
+        - Haiku
+      security:
+        - bearerAuth: []
+      summary: Submit a haiku
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+              required:
+                - text
+      responses:
+        "201":
+          description: Haiku created
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Haiku'
+        "400":
+          description: Validation error
+
+    get:
+      tags:
+        - Haiku
+      summary: Get random haikus
+      parameters:
+        - name: qty
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10
+          description: Number of haikus to return (default 2)
+      responses:
+        "200":
+          description: Random haikus
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Haiku'
+        "500":
+          description: Not enough haikus
+
+  /battle:
+    post:
+      tags:
+        - Battle
+      security:
+        - bearerAuth: []
+      summary: Submit a battle result
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                haikuIds:
+                  type: array
+                  items:
+                    type: string
+                winnerId:
+                  type: string
+              required:
+                - haikuIds
+                - winnerId
+      responses:
+        "201":
+          description: Battle recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Battle'
+        "400":
+          description: Validation error
+
+  /leaderboard:
+    get:
+      tags:
+        - Leaderboard
+      summary: Retrieve leaderboard
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [daily, weekly, monthly, all]
+          required: false
+          description: Time period for leaderboard
+      responses:
+        "200":
+          description: Leaderboard data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    rank:
+                      type: integer
+                    userId:
+                      type: string
+                    email:
+                      type: string
+                    points:
+                      type: integer
+                  required:
+                    - rank
+                    - userId
+                    - email
+                    - points
+
+  /points:
+    get:
+      tags:
+        - Points
+      security:
+        - bearerAuth: []
+      summary: Get user points summary
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: User to query
+      responses:
+        "200":
+          description: Points aggregation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointAggregation'
+        "404":
+          description: User not found
+
+  /report/haiku/{id}:
+    post:
+      tags:
+        - Haiku
+      security:
+        - bearerAuth: []
+      summary: Report a haiku
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Haiku id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+              required:
+                - reason
+      responses:
+        "201":
+          description: Report submitted
+        "400":
+          description: Validation error
+
