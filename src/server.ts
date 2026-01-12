@@ -4,6 +4,9 @@ import bodyParser from 'body-parser';
 import { v4 as uuidv4 } from 'uuid';
 import { scoreAggregationQueue } from './queue';
 import { scheduleDailyWinnerJob } from './cron';
+// Import worker modules to start BullMQ workers upon server boot.
+import './workers/dailyWinnerWorker';
+import './workers/scoreAggregationWorker';
 import bcrypt from 'bcryptjs';
 import redis from './redisInstance';
 
