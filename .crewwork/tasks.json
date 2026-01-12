@@ -73,14 +73,21 @@
     {
       "id": "4.5",
       "description": "Set up CI/CD pipeline to automate builds, tests, and deployment to cloud.",
-      "status": "in_progress",
+      "status": "completed",
       "priority": 5,
       "effort_hours": 15,
       "started_at": "2026-01-12T21:40:21.952485Z",
-      "completed_at": null,
+      "completed_at": "2026-01-12T21:41:50.749053Z",
       "error": null,
-      "result_summary": null,
-      "files_modified": [],
+      "result_summary": "**Implemented CI/CD pipeline**\n\n- Added a full multi\u2011stage `Dockerfile` for building and running the backend.\n- Created GitHub Actions workflow `.github/workflows/ci-cd.yml` that:\n  1. Lints/Builds backend with a Postgres test service.\n  2. Builds frontend.\n  3. Builds and pushes a container image to GitHub Container Registry.\n  4. Deploys to Fly.io when the necessary secrets are provided.\n- Added a minimal `fly.toml` with required configuration.\n- Updated `ci-cd.yml` to launch a Postgres servic",
+      "files_modified": [
+        ".crewwork/progress.md",
+        ".crewwork/state.json",
+        ".crewwork/tasks.json",
+        ".github/",
+        "Dockerfile",
+        "fly.toml"
+      ],
       "workstream": null,
       "tags": []
     }
