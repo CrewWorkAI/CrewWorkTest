@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: haiku-frontend-metrics
+  namespace: haiku-battle
+  labels:
+    k8s-app: haiku-frontend
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: frontend
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
