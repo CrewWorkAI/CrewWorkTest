@@ -1,4 +1,61 @@
 {
   "version": "1.0",
-  "tasks": []
+  "tasks": [
+    {
+      "id": "P1-1",
+      "description": "Gather requirements and define feature set",
+      "status": "in_progress",
+      "priority": 1,
+      "effort_hours": 8,
+      "started_at": "2026-01-12T18:56:47.010929Z",
+      "completed_at": null,
+      "error": null,
+      "result_summary": null,
+      "files_modified": [],
+      "workstream": null,
+      "tags": []
+    },
+    {
+      "id": "P1-2",
+      "description": "Create high\u2011level system architecture diagram",
+      "status": "planned",
+      "priority": 1,
+      "effort_hours": 6,
+      "started_at": null,
+      "completed_at": null,
+      "error": null,
+      "result_summary": null,
+      "files_modified": [],
+      "workstream": null,
+      "tags": []
+    },
+    {
+      "id": "P1-3",
+      "description": "Draft API specification using OpenAPI",
+      "status": "planned",
+      "priority": 2,
+      "effort_hours": 8,
+      "started_at": null,
+      "completed_at": null,
+      "error": null,
+      "result_summary": null,
+      "files_modified": [],
+      "workstream": null,
+      "tags": []
+    },
+    {
+      "id": "P1-4",
+      "description": "Design database schema for haiku, users, battles, scores",
+      "status": "planned",
+      "priority": 2,
+      "effort_hours": 6,
+      "started_at": null,
+      "completed_at": null,
+      "error": null,
+      "result_summary": null,
+      "files_modified": [],
+      "workstream": null,
+      "tags": []
+    }
+  ]
 }
