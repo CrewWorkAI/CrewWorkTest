@@ -6,7 +6,7 @@
 # The test will run for 30 minutes, ramping up to 10,000 concurrent virtual users.
 # Adjust `scenarios` and `target` as required for your environment.
 config:
-  target: http://localhost:3001
+  target: http://localhost:3000
   phases:
     - duration: 60
       arrivalRate: 200
@@ -20,9 +20,9 @@ config:
 scenarios:
   register_and_login:
     flow:
-      - post:
-          url: /api/auth/register
-          json:
+    - post:
+        url: /api/auth/register
+        json:
             email: test@example.com
             password: secret
       - post:
@@ -35,9 +35,9 @@ scenarios:
               as: auth_token
   submit_battle:
     flow:
-      - get:
-          url: /api/haiku
-          qs:
+    - get:
+        url: /api/haiku
+        qs:
             qty: 2
             excludeUser: '{{auth_token}}'
       - post:
@@ -49,15 +49,20 @@ scenarios:
             haikuIds: ['{{id.0}}', '{{id.1}}']
   get_leaderboard:
     flow:
-      - get:
-          url: /api/leaderboard
-          qs:
+    - get:
+        url: /api/leaderboard
+        qs:
             period: daily
           headers:
             Authorization: 'Bearer {{auth_token}}'
   get_random_haiku:
     flow:
-      - get:
-          url: /api/haiku
-          qs:
-            id: '{{randomId}}'
+    - get:
+        url: /api/haiku
+        qs:
+        id: '{{randomId}}'
+        
+# Global checks: ensure latency < 2000ms and status 200
+checks:
+  - http.response.statusCode: 200
+  - http.responseTime: {lt: 2000}

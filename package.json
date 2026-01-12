@@ -9,7 +9,8 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "worker": "node dist/workers/scoreAggregationWorker.js",
     "worker-dev": "ts-node-dev --respawn src/workers/scoreAggregationWorker.ts",
-    "test": "node test/integration.test.js"
+    "test": "node test/integration.test.js",
+    "loadtest": "artillery run loadtests/artillery.yml"
   },
   "keywords": [
     "haiku",
@@ -38,6 +39,7 @@
     "@types/uuid": "^9.0.2",
     "nodemon": "^3.0.1",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "artillery": "^2.42.0"
   }
 }
