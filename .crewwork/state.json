@@ -14,14 +14,14 @@
   "control": {},
   "budget": {
     "max_iterations": 1000,
-    "iterations_used": 4,
+    "iterations_used": 5,
     "max_tokens": 2000000,
-    "tokens_used": 5464,
+    "tokens_used": 7708,
     "max_time_minutes": 707,
     "started_at": "2026-01-12T19:07:24.442098Z"
   },
   "branch": null,
-  "last_checkpoint": "c39fa8c",
+  "last_checkpoint": "c43deb6",
   "checkpoint_commits": [
     "8fce2fe",
     "2cad372",
@@ -32,9 +32,10 @@
     "61ab8b7",
     "284879c",
     "ed8d41c",
-    "c39fa8c"
+    "c39fa8c",
+    "c43deb6"
   ],
-  "context_summary": "...l architecture diagram in Mermaid syntax, including components for frontend, auth, API gateway, micro\u2011services, workers, storage, CDN, monitorin (artifact: artifact://conversation/b4bec327-b8a0-4bc1-b501-a94584472541/01f44bdd-8e6a-4e47-ab9d-63e913d89aac)\nTask P1-3: **What I added**\n\n- `docs/openapi.yaml` \u2013 A complete OpenAPI\u202f3.1 specification for the Haiku Battle League MVP.  \n  - Describes all public endpoints: auth, haiku CRUD, battle submission, leaderboard r (artifact: artifact://conversation/a8b68158-d481-4b4e-a6de-589a8791de26/260669e5-f5d8-4141-b520-fa956d2ba7dc)\nTask P1-4: **What I did**\n\n- Created a PostgreSQL schema file `migrations/000_initial.sql` defining tables and relationships for the Haiku Battle League MVP.\n- Added tables:\n  - `users` (UUID, email, password ha (artifact: artifact://conversation/4c760f5e-c6b0-49ec-85b1-a6113e8ebb43/8323ae81-e632-46ba-91a3-fa4e7b8cc66f)\nTask P2-1: Task completed (artifact: artifact://conversation/0c77dca0-51f2-4b02-86c6-77fb5646249e/8169bc4c-364c-449b-87c1-89312a7f0339)\nTask P2-3: Implemented haiku retrieval and enhanced submission flow\n\n- **GET `/api/haiku/:id`** \u2013 fetch single haiku by ID.\n- Updated code comments for clarity.\n- Builds successfully with TypeScript.\n\nYou can no (artifact: artifact://conversation/3b1d78f1-00c5-4f60-a352-831972479fdb/b408b858-6f80-4ba3-8e22-08f951415c89)\nTask P2-4: **Implemented battle pairing and expanded API**\n\n* **Battle pairing** \u2013 `GET /api/battle/pair` returns two random haikus (optionally excluding a user ID).\n* **Battle submission** \u2013 now accepts `{ winn (artifact: artifact://conversation/d8715736-70ff-4b3f-9a4a-a074d45f6185/87aede22-c834-48dd-ab75-367a139db9b1)\nTask P2-2: Implemented secure authentication and user profile endpoints:\n\n**Key Features**\n- **Password hashing** using `bcryptjs` for safe storage.\n- **Registration** now checks for duplicate emails, hashes pas (artifact: artifact://conversation/3b7443c2-1c35-4cbc-9b42-c3c12bd1f50b/af6daa8e-c4e4-4033-bf5c-64de3cccc4c3)",
+  "context_summary": "...\n  - Describes all public endpoints: auth, haiku CRUD, battle submission, leaderboard r (artifact: artifact://conversation/a8b68158-d481-4b4e-a6de-589a8791de26/260669e5-f5d8-4141-b520-fa956d2ba7dc)\nTask P1-4: **What I did**\n\n- Created a PostgreSQL schema file `migrations/000_initial.sql` defining tables and relationships for the Haiku Battle League MVP.\n- Added tables:\n  - `users` (UUID, email, password ha (artifact: artifact://conversation/4c760f5e-c6b0-49ec-85b1-a6113e8ebb43/8323ae81-e632-46ba-91a3-fa4e7b8cc66f)\nTask P2-1: Task completed (artifact: artifact://conversation/0c77dca0-51f2-4b02-86c6-77fb5646249e/8169bc4c-364c-449b-87c1-89312a7f0339)\nTask P2-3: Implemented haiku retrieval and enhanced submission flow\n\n- **GET `/api/haiku/:id`** \u2013 fetch single haiku by ID.\n- Updated code comments for clarity.\n- Builds successfully with TypeScript.\n\nYou can no (artifact: artifact://conversation/3b1d78f1-00c5-4f60-a352-831972479fdb/b408b858-6f80-4ba3-8e22-08f951415c89)\nTask P2-4: **Implemented battle pairing and expanded API**\n\n* **Battle pairing** \u2013 `GET /api/battle/pair` returns two random haikus (optionally excluding a user ID).\n* **Battle submission** \u2013 now accepts `{ winn (artifact: artifact://conversation/d8715736-70ff-4b3f-9a4a-a074d45f6185/87aede22-c834-48dd-ab75-367a139db9b1)\nTask P2-2: Implemented secure authentication and user profile endpoints:\n\n**Key Features**\n- **Password hashing** using `bcryptjs` for safe storage.\n- **Registration** now checks for duplicate emails, hashes pas (artifact: artifact://conversation/3b7443c2-1c35-4cbc-9b42-c3c12bd1f50b/af6daa8e-c4e4-4033-bf5c-64de3cccc4c3)\nTask P2-5: Implemented an asynchronous job queue using BullMQ to aggregate daily and weekly scores:\n\n- Added BullMQ and PostgreSQL (`pg`) dependencies.\n- Created Redis client helper (`src/redisClient.ts`).\n- Set (artifact: artifact://conversation/b8fcc86b-6e95-4ca2-b888-98106d2cd72e/40b3b4da-1a94-44b4-b898-14cb74bfd758)",
   "created_at": "2026-01-12T18:56:46.990234Z",
-  "updated_at": "2026-01-12T19:21:08.319617Z"
+  "updated_at": "2026-01-12T19:35:54.315305Z"
 }
