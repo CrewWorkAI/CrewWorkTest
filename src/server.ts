@@ -229,4 +229,9 @@ app.get('/api/points', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Haiku Battle League API listening on port ${PORT}`));
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => console.log(`Haiku Battle League API listening on port ${PORT}`));
+}
+
+// Export app for testing purposes
+export { app };
