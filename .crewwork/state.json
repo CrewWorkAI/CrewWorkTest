@@ -14,14 +14,14 @@
   "control": {},
   "budget": {
     "max_iterations": 1000,
-    "iterations_used": 1,
+    "iterations_used": 2,
     "max_tokens": 2000000,
-    "tokens_used": 876,
+    "tokens_used": 3341,
     "max_time_minutes": 565,
     "started_at": "2026-01-12T21:29:29.293224Z"
   },
   "branch": null,
-  "last_checkpoint": "7a85512",
+  "last_checkpoint": "4147bfc",
   "checkpoint_commits": [
     "8fce2fe",
     "2cad372",
@@ -46,9 +46,10 @@
     "9114df5",
     "24ee239",
     "99205db",
-    "7a85512"
+    "7a85512",
+    "4147bfc"
   ],
-  "context_summary": "...\n\n**Key updates**\n- Added `frontend/pages/leaderboard.tsx` \u2013 fetches leaderboard data, tabs, table display, back link.\n- Updated `frontend/pages/ind (artifact: artifact://conversation/37cefc9a-100d-44bd-a03e-c45f2fc79df1/dd693a6f-2fb4-4bd5-8edf-abecb44b01cb)\nTask P3-5: **Implemented authentication UI and token handling**\n\n- Added `frontend/lib/auth.ts` with `AuthProvider`, context, `useAuth` hook, and `authFetch` helper to manage JWT tokens in localStorage.\n- Create (artifact: artifact://conversation/881740c0-56bf-41dd-b0f8-4f20b94e7e69/8e2e20c6-791c-4fde-9f1e-ab4dbc682e7a)\nTask 4.1: Task completed (artifact: artifact://conversation/c7926eee-baa0-4871-920b-fd7fc628798c/eadb7956-7e3a-4622-b46f-b3396ac2d073)\nTask 4.2: Implemented async job processing for vote tallying and daily winner computation:\n\n- **Queue Integration**\n  - `src/queue.ts` now uses BullMQ for real queue when `USE_REDIS=1`; otherwise a lightweight  (artifact: artifact://conversation/669f9866-20a2-434a-8ec9-e963378b955b/69ee0045-8737-4ae7-b33f-007588fc1ed5)\nTask 4.1: Implemented a complete core backend for Haiku Battle League with full integration test coverage:\n\n### Key Features\n- **Endpoints**  \n  \u2022 `POST /api/auth/register` & `login`  \n  \u2022 `POST /api/haiku` (us (artifact: artifact://conversation/c6371152-ae10-4548-86ab-b953db627a82/446f39ac-1582-4038-b9ac-b374a0ae431c)\nTask 4.2: Implemented async job processing:\n\n- **Bootstrapped workers** \u2013 Added imports for `dailyWinnerWorker` and `scoreAggregationWorker` in `src/server.ts` so BullMQ workers start automatically when the ser (artifact: artifact://conversation/f3c2a5dc-bd31-417d-a7b7-8ea434d24465/e1ea7213-9172-421c-ae40-656282d4973a)\nTask 4.1: Implemented the core backend APIs for Haiku submission, voting, and leaderboard retrieval along with comprehensive integration tests.  \nAll APIs are available:\n\n- **Auth** \u2013 register, login, authentic (artifact: artifact://conversation/16890c87-004e-4e8e-9f7b-6dff62bdc5e0/fee2a253-681c-42fb-8857-e1b477f8ffa5)",
+  "context_summary": "...\n\n- Added `frontend/lib/auth.ts` with `AuthProvider`, context, `useAuth` hook, and `authFetch` helper to manage JWT tokens in localStorage.\n- Create (artifact: artifact://conversation/881740c0-56bf-41dd-b0f8-4f20b94e7e69/8e2e20c6-791c-4fde-9f1e-ab4dbc682e7a)\nTask 4.1: Task completed (artifact: artifact://conversation/c7926eee-baa0-4871-920b-fd7fc628798c/eadb7956-7e3a-4622-b46f-b3396ac2d073)\nTask 4.2: Implemented async job processing for vote tallying and daily winner computation:\n\n- **Queue Integration**\n  - `src/queue.ts` now uses BullMQ for real queue when `USE_REDIS=1`; otherwise a lightweight  (artifact: artifact://conversation/669f9866-20a2-434a-8ec9-e963378b955b/69ee0045-8737-4ae7-b33f-007588fc1ed5)\nTask 4.1: Implemented a complete core backend for Haiku Battle League with full integration test coverage:\n\n### Key Features\n- **Endpoints**  \n  \u2022 `POST /api/auth/register` & `login`  \n  \u2022 `POST /api/haiku` (us (artifact: artifact://conversation/c6371152-ae10-4548-86ab-b953db627a82/446f39ac-1582-4038-b9ac-b374a0ae431c)\nTask 4.2: Implemented async job processing:\n\n- **Bootstrapped workers** \u2013 Added imports for `dailyWinnerWorker` and `scoreAggregationWorker` in `src/server.ts` so BullMQ workers start automatically when the ser (artifact: artifact://conversation/f3c2a5dc-bd31-417d-a7b7-8ea434d24465/e1ea7213-9172-421c-ae40-656282d4973a)\nTask 4.1: Implemented the core backend APIs for Haiku submission, voting, and leaderboard retrieval along with comprehensive integration tests.  \nAll APIs are available:\n\n- **Auth** \u2013 register, login, authentic (artifact: artifact://conversation/16890c87-004e-4e8e-9f7b-6dff62bdc5e0/fee2a253-681c-42fb-8857-e1b477f8ffa5)\nTask 4.2: Implemented async job processing for vote tallying and daily winner calculation:\n\n- **Crontab**: Added `scheduleDailyWinnerJob` in `src/cron.ts` to enqueue `daily-winner` jobs at UTC midnight and then (artifact: artifact://conversation/a091196d-56da-4010-addd-4b5033d6b251/f905bf11-3f56-48c2-862d-b79727921a5f)",
   "created_at": "2026-01-12T18:56:46.990234Z",
-  "updated_at": "2026-01-12T21:33:24.335726Z"
+  "updated_at": "2026-01-12T21:35:03.822817Z"
 }
