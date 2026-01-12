@@ -14,18 +14,19 @@
   "control": {},
   "budget": {
     "max_iterations": 1000,
-    "iterations_used": 0,
+    "iterations_used": 1,
     "max_tokens": 2000000,
-    "tokens_used": 0,
+    "tokens_used": 781,
     "max_time_minutes": 718,
     "started_at": "2026-01-12T18:56:47.000783Z"
   },
   "branch": null,
-  "last_checkpoint": "8fce2fe",
+  "last_checkpoint": "2cad372",
   "checkpoint_commits": [
-    "8fce2fe"
+    "8fce2fe",
+    "2cad372"
   ],
-  "context_summary": "",
+  "context_summary": "Task P1-1: **What I added**\n\n- **`FEATURE_REQUIREMENTS.md`** \u2013 complete product spec and architecture overview for the Haiku Battle League MVP, detailing core features, APIs, data models, async processing, scali (artifact: artifact://conversation/2f597d39-1f99-4f28-b577-4b31590906b3/48f66552-97bd-4f6d-983f-5bf71b0203e9)",
   "created_at": "2026-01-12T18:56:46.990234Z",
-  "updated_at": "2026-01-12T18:56:47.010941Z"
+  "updated_at": "2026-01-12T19:00:01.272796Z"
 }
