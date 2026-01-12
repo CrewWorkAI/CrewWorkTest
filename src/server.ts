@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcryptjs';
 
 const app = express();
 app.use(cors());
@@ -26,8 +27,10 @@ interface Battle {
 interface User {
   id: string;
   email: string;
-  password: string;
+  passwordHash: string;
   points: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const haikus: Haiku[] = [];
@@ -35,19 +38,32 @@ const battles: Battle[] = [];
 const users: User[] = [];
 
 // --- Auth (very simple demo) ----------------------------
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Missing email or password' });
-  const user: User = { id: uuidv4(), email, password, points: 0 };
+  const existing = users.find(u => u.email === email);
+  if (existing) return res.status(409).json({ error: 'Email already registered' });
+  const passwordHash = await bcrypt.hash(password, 10);
+  const user: User = {
+    id: uuidv4(),
+    email,
+    passwordHash,
+    points: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
   users.push(user);
   res.json({ userId: user.id });
 });
 
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
-  const user = users.find(u => u.email === email && u.password === password);
+  const user = users.find(u => u.email === email);
   if (!user) return res.status(401).json({ error: 'Invalid credentials' });
-  res.json({ userId: user.id });
+  const valid = await bcrypt.compare(password, user.passwordHash);
+  if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
+  // Simple token: user id. In production use JWT
+  res.json({ token: user.id, userId: user.id });
 });
 
 // --- Haiku CRUD ----------------------------
@@ -170,6 +186,18 @@ app.get('/api/leaderboard', (req, res) => {
     };
   });
   res.json(leaderboard);
+});
+
+// --- Authenticated user profile ----------------------------
+app.get('/api/auth/me', (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing or invalid token' });
+  }
+  const token = authHeader.slice(7).trim();
+  const user = users.find(u => u.id === token);
+  if (!user) return res.status(401).json({ error: 'Invalid token' });
+  res.json({ id: user.id, email: user.email, points: user.points, createdAt: user.createdAt });
 });
 
 // --- Points aggregation ----------------------------

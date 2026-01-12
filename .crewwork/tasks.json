@@ -29,10 +29,10 @@
     {
       "id": "P2-2",
       "description": "Implement authentication and user profile endpoints",
-      "status": "planned",
+      "status": "in_progress",
       "priority": 2,
       "effort_hours": 8,
-      "started_at": null,
+      "started_at": "2026-01-12T19:14:59.507087Z",
       "completed_at": null,
       "error": null,
       "result_summary": null,
@@ -63,14 +63,20 @@
     {
       "id": "P2-4",
       "description": "Implement battle pairing algorithm and API",
-      "status": "in_progress",
+      "status": "completed",
       "priority": 1,
       "effort_hours": 12,
       "started_at": "2026-01-12T19:11:10.847962Z",
-      "completed_at": null,
+      "completed_at": "2026-01-12T19:14:59.484831Z",
       "error": null,
-      "result_summary": null,
-      "files_modified": [],
+      "result_summary": "**Implemented battle pairing and expanded API**\n\n* **Battle pairing** \u2013 `GET /api/battle/pair` returns two random haikus (optionally excluding a user ID).\n* **Battle submission** \u2013 now accepts `{ winnerId, haikuIds }`, validates data, updates points, and stores the battle.\n* **Haiku retrieval** \u2013 added optional `excludeUser` for random haiku lists.\n* **Leaderboard** \u2013 added period support (`daily`, `weekly`, `monthly`, `all`), filtering battles by timeframe.\n* **Points aggregation** \u2013 `GET /api/",
+      "files_modified": [
+        ".crewwork/progress.md",
+        ".crewwork/state.json",
+        ".crewwork/tasks.json",
+        "dist/server.js",
+        "src/server.ts"
+      ],
       "workstream": null,
       "tags": []
     },

@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const uuid_1 = require("uuid");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
@@ -14,20 +15,35 @@ const haikus = [];
 const battles = [];
 const users = [];
 // --- Auth (very simple demo) ----------------------------
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password)
         return res.status(400).json({ error: 'Missing email or password' });
-    const user = { id: (0, uuid_1.v4)(), email, password, points: 0 };
+    const existing = users.find(u => u.email === email);
+    if (existing)
+        return res.status(409).json({ error: 'Email already registered' });
+    const passwordHash = await bcryptjs_1.default.hash(password, 10);
+    const user = {
+        id: (0, uuid_1.v4)(),
+        email,
+        passwordHash,
+        points: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    };
     users.push(user);
     res.json({ userId: user.id });
 });
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
     const { email, password } = req.body;
-    const user = users.find(u => u.email === email && u.password === password);
+    const user = users.find(u => u.email === email);
     if (!user)
         return res.status(401).json({ error: 'Invalid credentials' });
-    res.json({ userId: user.id });
+    const valid = await bcryptjs_1.default.compare(password, user.passwordHash);
+    if (!valid)
+        return res.status(401).json({ error: 'Invalid credentials' });
+    // Simple token: user id. In production use JWT
+    res.json({ token: user.id, userId: user.id });
 });
 // --- Haiku CRUD ----------------------------
 app.post('/api/haiku', (req, res) => {
@@ -151,6 +167,18 @@ app.get('/api/leaderboard', (req, res) => {
         };
     });
     res.json(leaderboard);
+});
+// --- Authenticated user profile ----------------------------
+app.get('/api/auth/me', (req, res) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Missing or invalid token' });
+    }
+    const token = authHeader.slice(7).trim();
+    const user = users.find(u => u.id === token);
+    if (!user)
+        return res.status(401).json({ error: 'Invalid token' });
+    res.json({ id: user.id, email: user.email, points: user.points, createdAt: user.createdAt });
 });
 // --- Points aggregation ----------------------------
 app.get('/api/points', (req, res) => {
