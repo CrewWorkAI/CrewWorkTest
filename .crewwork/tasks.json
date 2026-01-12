@@ -64,14 +64,19 @@
     {
       "id": "P1-4",
       "description": "Design database schema for haiku, users, battles, scores",
-      "status": "in_progress",
+      "status": "completed",
       "priority": 2,
       "effort_hours": 6,
       "started_at": "2026-01-12T19:04:46.299650Z",
-      "completed_at": null,
+      "completed_at": "2026-01-12T19:06:48.790727Z",
       "error": null,
-      "result_summary": null,
-      "files_modified": [],
+      "result_summary": "**What I did**\n\n- Created a PostgreSQL schema file `migrations/000_initial.sql` defining tables and relationships for the Haiku Battle League MVP.\n- Added tables:\n  - `users` (UUID, email, password hash, points, timestamps)\n  - `haikus` (UUID, user FK, content, timestamp)\n  - `battles` (UUID, haiku A/B FK, winner FK, timestamp)\n  - Aggregation tables: `daily_points`, `weekly_points`\n  - Winner tables: `daily_winners`, `weekly_winners`\n- Included triggers for `updated_at`, foreign key constraints",
+      "files_modified": [
+        ".crewwork/progress.md",
+        ".crewwork/state.json",
+        ".crewwork/tasks.json",
+        "migrations/"
+      ],
       "workstream": null,
       "tags": []
     }
