@@ -156,14 +156,21 @@
     {
       "id": "P2-6",
       "description": "Write integration tests for core APIs",
-      "status": "in_progress",
+      "status": "completed",
       "priority": 2,
       "effort_hours": 6,
       "started_at": "2026-01-12T19:35:54.315297Z",
-      "completed_at": null,
+      "completed_at": "2026-01-12T19:37:58.826860Z",
       "error": null,
-      "result_summary": null,
-      "files_modified": [],
+      "result_summary": "Implemented comprehensive integration tests and server adjustments:\n\n### Key Updates\n- **Server Export & Test Guard**\n  - Added `export { app }` and conditional server start to prevent listening during tests.\n\n- **Integration Test Script**\n  - New `test/integration.test.js`:\n    - Launches the server.\n    - Exercises registration, login, haiku CRUD, battle pairing/submission, leaderboard, profile, and points endpoints.\n    - Uses native Node `fetch`, `assert`, and child process management.\n    -",
+      "files_modified": [
+        ".crewwork/progress.md",
+        ".crewwork/state.json",
+        ".crewwork/tasks.json",
+        "package.json",
+        "src/server.ts",
+        "test/"
+      ],
       "workstream": null,
       "tags": []
     }
