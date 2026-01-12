@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const uuid_1 = require("uuid");
+const queue_1 = require("./queue");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
@@ -128,6 +129,11 @@ app.post('/api/battle', (req, res) => {
     const winner = users.find(u => u.id === winnerId);
     if (winner)
         winner.points += 1;
+    // Enqueue aggregation job – the worker will persist points to DB
+    queue_1.scoreAggregationQueue.add('aggregate', {
+        winnerId,
+        createdAt: battle.createdAt,
+    });
     res.json(battle);
 });
 // --- Leaderboard ----------------------------

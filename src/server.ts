@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { v4 as uuidv4 } from 'uuid';
+import { scoreAggregationQueue } from './queue';
 import bcrypt from 'bcryptjs';
 
 const app = express();
@@ -149,6 +150,11 @@ app.post('/api/battle', (req, res) => {
   // Update points (basic, 1 point per win)
   const winner = users.find(u => u.id === winnerId);
   if (winner) winner.points += 1;
+  // Enqueue aggregation job – the worker will persist points to DB
+  scoreAggregationQueue.add('aggregate', {
+    winnerId,
+    createdAt: battle.createdAt,
+  });
   res.json(battle);
 });
 
