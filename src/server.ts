@@ -106,7 +106,8 @@ app.get('/api/haiku/random', (req, res) => {
   const available = excludeUser
     ? haikus.filter((h) => h.userId !== excludeUser)
     : haikus;
-  if (available.length < 2) return res.status(500).json({ error: 'Not enough haikus' });
+  // Allow returning fewer haikus if the pool is small, but require at least one
+  if (available.length < 1) return res.status(500).json({ error: 'Not enough haikus' });
   const shuffled = [...available].sort(() => 0.5 - Math.random());
   res.json(shuffled.slice(0, Math.min(qty, shuffled.length)));
 });
@@ -161,12 +162,17 @@ app.post('/api/battle', (req, res) => {
     return res.status(400).json({ error: 'Winner must be one of selected haikus' });
   }
   battles.push(battle);
-  // Update points (basic, 1 point per win)
-  const winner = users.find(u => u.id === winnerId);
-  if (winner) winner.points += 1;
-  // Enqueue aggregation job – the worker will persist points to DB
+  // Award a point to the owner of the winning haiku.
+  const winningHaiku = haikus.find(h => h.id === winnerId);
+  if (winningHaiku) {
+    const owner = users.find(u => u.id === winningHaiku.userId);
+    if (owner) owner.points += 1;
+  }
+  // Enqueue aggregation job – the worker will persist points to DB.
+  // Send the *user* ID of the winner for clarity.
+  const winnerUserId = winningHaiku?.userId;
   scoreAggregationQueue.add('aggregate', {
-    winnerId,
+    winnerUserId,
     createdAt: battle.createdAt,
   });
   res.json(battle);

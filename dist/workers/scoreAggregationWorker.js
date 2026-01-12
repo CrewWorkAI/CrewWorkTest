@@ -18,7 +18,7 @@ function getWeekStart(date) {
 }
 // QueueScheduler is optional; if you require delayed job handling, add it.
 const worker = new bullmq_1.Worker('score-aggregation', async (job) => {
-    const { winnerId, createdAt } = job.data;
+    const { winnerUserId, createdAt } = job.data;
     const battleDate = new Date(createdAt);
     const day = battleDate.toISOString().slice(0, 10); // YYYY-MM-DD
     const weekStart = getWeekStart(battleDate);
@@ -29,12 +29,12 @@ const worker = new bullmq_1.Worker('score-aggregation', async (job) => {
         await client.query(`INSERT INTO daily_points(user_id, date, points)
          VALUES ($1, $2, 1)
          ON CONFLICT (user_id, date)
-           DO UPDATE SET points = daily_points.points + 1`, [winnerId, day]);
+           DO UPDATE SET points = daily_points.points + 1`, [winnerUserId, day]);
         // Weekly aggregation
         await client.query(`INSERT INTO weekly_points(user_id, week_start, points)
          VALUES ($1, $2, 1)
          ON CONFLICT (user_id, week_start)
-           DO UPDATE SET points = weekly_points.points + 1`, [winnerId, weekStart]);
+           DO UPDATE SET points = weekly_points.points + 1`, [winnerUserId, weekStart]);
         await client.query('COMMIT');
     }
     catch (err) {

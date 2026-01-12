@@ -13,7 +13,7 @@ const path = require('path');
  */
 function launchServer() {
   const server = spawn(process.execPath, [path.join(__dirname, '..', 'dist', 'server.js')], {
-    env: { ...process.env },
+    env: { ...process.env, PORT: '3004' },
   });
 
   return new Promise((resolve, reject) => {
@@ -45,7 +45,7 @@ function request(method, url, body = null, token = null) {
 
 async function runTests() {
   const server = await launchServer();
-  const base = 'http://localhost:3001';
+  const base = 'http://localhost:3004';
   let userId, token, haikuId;
 
   // 1. Register a user
@@ -59,6 +59,26 @@ async function runTests() {
   assert.strictEqual(lg.status, 200, 'Login response must be OK');
   token = lg.body.token;
   assert.strictEqual(lg.body.userId, userId, 'Login returns same user ID');
+
+  // 2.5. Register & login second user (needs to provide two haikus from other user)
+  const reg2 = await request('POST', `${base}/api/auth/register`, { email: 'test2@example.com', password: 'secret' });
+  assert.strictEqual(reg2.status, 200, 'Second user registration OK');
+  const user2Id = reg2.body.userId;
+  const lg2 = await request('POST', `${base}/api/auth/login`, { email: 'test2@example.com', password: 'secret' });
+  assert.strictEqual(lg2.status, 200, 'Second user login OK');
+  const token2 = lg2.body.token;
+  assert.strictEqual(lg2.body.userId, user2Id, 'Second login returns correct user ID');
+
+  // Create two haikus for the second user
+  const haiku2Res = await request('POST', `${base}/api/haiku`, { userId: user2Id, text: 'Winter wind whispers' }, token2);
+  assert.strictEqual(haiku2Res.status, 200, 'Second user haiku creation OK');
+  const haiku2Id = haiku2Res.body.id;
+  assert.ok(haiku2Id, 'Second haiku ID returned');
+
+  const haiku3Res = await request('POST', `${base}/api/haiku`, { userId: user2Id, text: "Autumn's breath lingers" }, token2);
+  assert.strictEqual(haiku3Res.status, 200, 'Third haiku creation OK');
+  const haiku3Id = haiku3Res.body.id;
+  assert.ok(haiku3Id, 'Third haiku ID returned');
 
   // 3. Create a haiku
   const haikuRes = await request('POST', `${base}/api/haiku`, { userId, text: 'Silent snow falls' }, token);
@@ -115,4 +135,3 @@ runTests().catch(err => {
   console.error('Test failure:', err);
   process.exit(1);
 });
-

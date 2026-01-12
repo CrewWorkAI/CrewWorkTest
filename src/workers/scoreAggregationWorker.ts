@@ -18,7 +18,7 @@ function getWeekStart(date: Date): string {
 const worker = new Worker(
   'score-aggregation',
   async (job: Job) => {
-    const { winnerId, createdAt } = job.data as { winnerId: string; createdAt: string };
+    const { winnerUserId, createdAt } = job.data as { winnerUserId: string; createdAt: string };
     const battleDate = new Date(createdAt);
     const day = battleDate.toISOString().slice(0, 10); // YYYY-MM-DD
     const weekStart = getWeekStart(battleDate);
@@ -32,7 +32,7 @@ const worker = new Worker(
          VALUES ($1, $2, 1)
          ON CONFLICT (user_id, date)
            DO UPDATE SET points = daily_points.points + 1`,
-        [winnerId, day]
+        [winnerUserId, day]
       );
       // Weekly aggregation
       await client.query(
@@ -40,7 +40,7 @@ const worker = new Worker(
          VALUES ($1, $2, 1)
          ON CONFLICT (user_id, week_start)
            DO UPDATE SET points = weekly_points.points + 1`,
-        [winnerId, weekStart]
+        [winnerUserId, weekStart]
       );
       await client.query('COMMIT');
     } catch (err) {
