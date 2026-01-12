@@ -1,0 +1,18 @@
+# Multi‑stage build for backend only
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --silent
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine
+WORKDIR /app
+# copy only runtime artifacts from previous stage
+COPY --from=build /app/dist ./dist
+# Install production deps for runtime
+COPY package.json package-lock.json ./
+RUN npm ci --only=production
+EXPOSE 3000
+USER node
+CMD ["node", "dist/server.js"]

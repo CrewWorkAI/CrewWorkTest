@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: haiku-backend
+  namespace: haiku-battle
+  labels:
+    app.kubernetes.io/component: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: backend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: backend
+    spec:
+      containers:
+      - name: app
+        image: "ghcr.io/cw-test/haiku-backend:latest"
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: haiku-backend-config
+        - secretRef:
+            name: haiku-backend-secrets
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 250m
+            memory: 256Mi

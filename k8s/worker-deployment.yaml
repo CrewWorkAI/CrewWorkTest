@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: haiku-workers
+  namespace: haiku-battle
+  labels:
+    app.kubernetes.io/component: workers
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: workers
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: workers
+    spec:
+      containers:
+      - name: workers
+        image: "ghcr.io/cw-test/haiku-workers:latest"
+        envFrom:
+        - configMapRef:
+            name: haiku-backend-config
+        - secretRef:
+            name: haiku-backend-secrets
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi

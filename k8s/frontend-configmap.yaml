@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haiku-frontend-config
+  namespace: haiku-battle
+data:
+  NODE_ENV: "production"

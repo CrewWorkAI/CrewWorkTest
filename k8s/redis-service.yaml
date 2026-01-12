@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: haiku-redis
+  namespace: haiku-battle
+  labels:
+    app.kubernetes.io/component: redis
+spec:
+  selector:
+    app.kubernetes.io/component: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+  type: ClusterIP

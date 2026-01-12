@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haiku-backend-config
+  namespace: haiku-battle
+data:
+  NODE_ENV: "production"
+  PGHOST: "haiku-postgres-primary"
+  PGPORT: "5432"
+  PGUSER: "haiku_user"
+  PGHOST_REPLICA: "haiku-postgres-replica"
+  PGPASSWORD: "haiku_pass"
+  PGDATABASE: "haiku"
+  REDIS_HOST: "haiku-redis"
+  REDIS_PORT: "6379"
+  USE_REDIS: "1"
