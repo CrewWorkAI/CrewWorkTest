@@ -1,2 +1,4 @@
 node_modules/
-.github/workflows/
+dist/
+.env
+.DS_Store

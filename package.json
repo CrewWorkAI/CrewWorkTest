@@ -1,0 +1,16 @@
+{
+  "name": "crewworktest",
+  "version": "1.0.0",
+  "description": "Enterprise Customer Success platform skeleton.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": ["customer-success", "enterprise", "playbooks"],
+  "author": "CrewWorkAI",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}
+
