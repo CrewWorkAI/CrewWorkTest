@@ -1,0 +1,29 @@
+{
+  "version": "2.0",
+  "execution_id": "03c0120d-1f31-4ce4-bcb7-cf23754cac18",
+  "project_id": "168e0b28-a848-468b-9c8b-628b5eac13e0",
+  "goal": "Build an \u201cEnterprise Customer Success\u201d platform:\n  - Core entities: accounts, contacts, contracts, health signals, playbooks, and renewal risks.\n  - Workflows: onboarding playbooks with tasks + owners, risk escalation with SLA timers, and executive summaries.\n  - Analytics: daily rollup of health scores, churn risk buckets, and trend charts.\n  - UI: account list + filters, account detail with timeline, risk dashboard, and playbook execution view.\n  - Permissions: owner + collaborator roles (read/write) with access checks on one critical route.\n  - Tests: service unit tests for health rollups and risk escalation; one UI smoke test.\n  Local/dev only (no cloud provisioning or CI/CD).",
+  "source": "api",
+  "roadmap_id": null,
+  "milestone_id": null,
+  "status": "initializing",
+  "current_task_index": null,
+  "completion_signal": null,
+  "completion_met": false,
+  "continuous_mode": false,
+  "control": {},
+  "budget": {
+    "max_iterations": 1000,
+    "iterations_used": 0,
+    "max_tokens": 2000000,
+    "tokens_used": 0,
+    "max_time_minutes": 719997,
+    "started_at": "2026-01-13T03:53:56.190754Z"
+  },
+  "branch": null,
+  "last_checkpoint": null,
+  "checkpoint_commits": [],
+  "context_summary": "",
+  "created_at": "2026-01-13T03:53:56.190749Z",
+  "updated_at": "2026-01-13T03:53:56.190771Z"
+}

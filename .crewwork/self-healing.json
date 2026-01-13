@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "project_id": "168e0b28-a848-468b-9c8b-628b5eac13e0",
+  "ingest_url": "http://localhost/api/projects/168e0b28-a848-468b-9c8b-628b5eac13e0/error-tracking/ingest",
+  "auth": {
+    "header": "X-API-Key",
+    "query_param": "api_key",
+    "required_scopes": [
+      "projects:write"
+    ]
+  },
+  "notes": [
+    "Send single error events (batch ingest is not yet available).",
+    "Do not commit API keys into repositories."
+  ]
+}
