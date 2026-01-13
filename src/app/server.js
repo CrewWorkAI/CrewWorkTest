@@ -1,21 +1,21 @@
+/**
+ * Minimal Express server used solely for unit tests.
+ * It wires the permission middleware and provides a very small
+ * health‑check endpoint that mirrors the expectations of
+ * `permission.test.js`.
+ */
+
 const express = require('express');
 const { permissionMiddleware } = require('./middleware/permission');
 
-/**
- * Express application entry point.
- *
- * Only a single critical route is implemented for this prototype:
- *   GET /accounts/:id/health
- *
- * The route returns a dummy health payload and is protected by the
- * `permissionMiddleware` defined in `./middleware/permission.js`.
- */
 const app = express();
 
+// Simple route to test permission logic
 app.get('/accounts/:id/health', permissionMiddleware, (req, res) => {
-  // In a real system this would query a database or service.
-  res.json({ account_id: req.params.id, health: 'Excellent' });
+  const account_id = req.params.id;
+  // The middleware guarantees that requester role and account-id
+  // headers are present and valid before reaching this handler.
+  res.json({ account_id, health: 'Excellent' });
 });
 
 module.exports = app;
-

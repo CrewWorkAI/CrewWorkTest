@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../../app/server');
+const app = require('../app/server');
 
 /**
  * Tests for the permission middleware and the protected `/accounts/:id/health`
@@ -38,4 +38,3 @@ describe('Permission Middleware', () => {
     expect(res.status).toBe(401);
   });
 });
-
