@@ -1,0 +1,7 @@
+{
+  "context_requests": [
+    {"type": "file_excerpt", "path": "src/server.ts", "start_line": 1, "line_count": 400, "reason": "Need battle logic, scoring, leaderboard endpoints"},
+    {"type": "file_excerpt", "path": "src/queue.ts", "start_line": 1, "line_count": 200, "reason": "Need queue implementation used in battle endpoint"},
+    {"type": "file_excerpt", "path": "src/workers/scoreAggregationWorker.ts", "start_line": 1, "line_count": 200, "reason": "Need aggregation logic for scoring tests"}
+  ]
+}
