@@ -1,4 +1,33 @@
 {
   "version": "1.0",
-  "tasks": []
+  "tasks": [
+    {
+      "id": "T1.1",
+      "description": "Update README with project outline",
+      "status": "in_progress",
+      "priority": 2,
+      "effort_hours": 1,
+      "started_at": "2026-01-13T03:53:56.209561Z",
+      "completed_at": null,
+      "error": null,
+      "result_summary": null,
+      "files_modified": [],
+      "workstream": null,
+      "tags": []
+    },
+    {
+      "id": "T1.2",
+      "description": "Create .crewwork/.config placeholder file",
+      "status": "planned",
+      "priority": 5,
+      "effort_hours": 1,
+      "started_at": null,
+      "completed_at": null,
+      "error": null,
+      "result_summary": null,
+      "files_modified": [],
+      "workstream": null,
+      "tags": []
+    }
+  ]
 }
