@@ -89,14 +89,21 @@
     {
       "id": "3.5",
       "description": "Add a UI smoke test stub verifying account list rendering",
-      "status": "in_progress",
+      "status": "completed",
       "priority": 1,
       "effort_hours": 2,
       "started_at": "2026-01-13T04:17:25.087508Z",
-      "completed_at": null,
+      "completed_at": "2026-01-13T04:19:05.585228Z",
       "error": null,
-      "result_summary": null,
-      "files_modified": [],
+      "result_summary": "**What I did**\n\n- Extended `package.json` to include React, React\u2011DOM, and Testing Library dev dependencies.\n- Added a simple `AccountList.jsx` component that renders a list of account names.\n- Created a UI smoke test (`account_list_smoke.test.js`) that renders the component with mock data and verifies the list items are present and correctly labeled.\n\nThese files will let you run `npm test` and confirm that the account list UI renders as expected. Feel free to add more UI logic or tests later!",
+      "files_modified": [
+        ".crewwork/progress.md",
+        ".crewwork/state.json",
+        ".crewwork/tasks.json",
+        "package.json",
+        "src/__tests__/ui/",
+        "src/ui/"
+      ],
       "workstream": null,
       "tags": []
     }
