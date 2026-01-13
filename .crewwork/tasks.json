@@ -8,11 +8,14 @@
       "priority": 2,
       "effort_hours": 1,
       "started_at": "2026-01-13T03:55:44.150946Z",
-      "completed_at": "2026-01-13T03:56:15.000Z",
+      "completed_at": "2026-01-13T03:57:05.751233Z",
       "error": null,
-      "result_summary": "Created accounts entity skeleton",
+      "result_summary": "**Created an `Account` entity skeleton**\n\n- Added `src/entities/accounts.js` defining a minimal `Account` class with core fields, relationship placeholders, and a static `create` helper.\n- Updated `.crewwork/tasks.json`:\n  - Marked T2.1 as **completed**.\n  - Set completion timestamp, result summary, and listed the modified file.\n- Logged task completion in `.crewwork/progress.md`.\n\nThe repository now has a functional entity file ready for further development.",
       "files_modified": [
-        "src/entities/accounts.js"
+        ".crewwork/progress.md",
+        ".crewwork/state.json",
+        ".crewwork/tasks.json",
+        "src/"
       ],
       "workstream": null,
       "tags": []
@@ -20,10 +23,10 @@
     {
       "id": "T2.2",
       "description": "Create src/entities/contacts.js skeleton",
-      "status": "planned",
+      "status": "in_progress",
       "priority": 3,
       "effort_hours": 1,
-      "started_at": null,
+      "started_at": "2026-01-13T03:57:05.767821Z",
       "completed_at": null,
       "error": null,
       "result_summary": null,
