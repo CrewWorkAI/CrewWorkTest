@@ -2,59 +2,44 @@
   "version": "1.0",
   "tasks": [
     {
-      "id": "10.1",
+      "id": "11.1",
       "description": "Design and implement a scalable PostgreSQL schema with appropriate indexes for haiku submissions, battles, and scoring to support 5\u201310M daily users",
-      "status": "completed",
+      "status": "in_progress",
       "priority": 1,
       "effort_hours": 12,
-      "started_at": "2026-01-13T00:21:17.243854Z",
-      "completed_at": "2026-01-13T00:22:54.837790Z",
+      "started_at": "2026-01-13T00:31:54.068070Z",
+      "completed_at": null,
       "error": null,
-      "result_summary": "Task completed",
-      "files_modified": [
-        ".crewwork/progress.md",
-        ".crewwork/state.json",
-        ".crewwork/tasks.json"
-      ],
+      "result_summary": null,
+      "files_modified": [],
       "workstream": null,
       "tags": []
     },
     {
-      "id": "10.2",
+      "id": "11.2",
       "description": "Build an asynchronous job queue (e.g., Bull/Redis) to calculate daily winners and aggregate points nightly",
-      "status": "completed",
+      "status": "planned",
       "priority": 3,
       "effort_hours": 10,
-      "started_at": "2026-01-13T00:22:54.854005Z",
-      "completed_at": "2026-01-13T00:25:12.158778Z",
+      "started_at": null,
+      "completed_at": null,
       "error": null,
-      "result_summary": "**What\u2019s already in place**\n\n* **BullMQ + Redis integration** \u2013 `src/queue.ts` exposes a `scoreAggregationQueue` that uses BullMQ when `USE_REDIS=1`, otherwise a lightweight fake queue that immediately runs the aggregation logic.\n* **Background workers**  \n  * `src/workers/dailyWinnerWorker.ts` \u2013 reads the top user for a given day from the `daily_points` table and inserts them into `daily_winners`.  \n  * `src/workers/scoreAggregationWorker.ts` \u2013 increments `daily_points` and `weekly_points` per",
-      "files_modified": [
-        ".crewwork/progress.md",
-        ".crewwork/state.json",
-        ".crewwork/tasks.json",
-        "dist/server.js"
-      ],
+      "result_summary": null,
+      "files_modified": [],
       "workstream": null,
       "tags": []
     },
     {
-      "id": "10.3",
+      "id": "11.3",
       "description": "Develop comprehensive unit tests for core backend services such as battle logic, scoring calculation, and leaderboard retrieval",
-      "status": "completed",
+      "status": "planned",
       "priority": 3,
       "effort_hours": 8,
-      "started_at": "2026-01-13T00:25:12.177676Z",
-      "completed_at": "2026-01-13T00:30:45.763369Z",
+      "started_at": null,
+      "completed_at": null,
       "error": null,
-      "result_summary": "Implemented comprehensive backend tests:\n\n- Added new test file `backendServices.test.js` covering battle pairing exclusions, error handling, points accumulation, and leaderboard queries.\n- Refactored existing tests for correct HTTP method usage and ensured sufficient non-user haikus for exclusion tests.\n- Updated helper functions for request creation and user registration.\n- Improved test clarity and added explanatory comments.\n\nAll existing tests now pass with the new unit tests, ensuring core",
-      "files_modified": [
-        ".crewwork/progress.md",
-        ".crewwork/state.json",
-        ".crewwork/tasks.json",
-        "request.json",
-        "test/unit/backendServices.test.js"
-      ],
+      "result_summary": null,
+      "files_modified": [],
       "workstream": null,
       "tags": []
     }

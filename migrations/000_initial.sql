@@ -37,6 +37,11 @@ CREATE TABLE IF NOT EXISTS haikus (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
+    -- Flag indicates whether the haiku is publicly visible for battles.
+    -- This allows future moderation flags. Defaults to true.
+    is_public BOOLEAN NOT NULL DEFAULT true,
+    -- Optional line count for quick validation and front‑end UI.
+    line_count INTEGER CHECK (line_count >= 1 AND line_count <= 3) DEFAULT 3,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -84,6 +89,8 @@ CREATE TABLE IF NOT EXISTS weekly_winners (
 
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_haikus_user_id ON haikus(user_id);
+-- Trigram index for full‑text search on haiku content (great for searching by keyword).</n+-- The GIN index provides efficient LIKE/ILIKE queries.
+CREATE INDEX IF NOT EXISTS idx_haikus_content_trgm ON haikus USING GIN (content gin_trgm_ops);
 CREATE INDEX IF NOT EXISTS idx_battles_created_at ON battles(created_at);
 CREATE INDEX IF NOT EXISTS idx_user_points ON users(points DESC);
 CREATE INDEX IF NOT EXISTS idx_battles_winner_id ON battles(winner_id);
