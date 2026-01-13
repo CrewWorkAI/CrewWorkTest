@@ -190,6 +190,9 @@ app.post('/api/battle', async (req, res) => {
   res.json(battle);
 });
 
+// Export the Express app for integration and unit tests.
+export { app };
+
 // --- Leaderboard ----------------------------
 app.get('/api/leaderboard', async (req, res) => {
   const period = req.query.period as string | undefined;
@@ -307,5 +310,4 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-// Export app for testing purposes
-export { app };
+// (Duplicate export removed – only one export at bottom)

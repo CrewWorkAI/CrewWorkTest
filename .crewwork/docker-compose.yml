@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: .crewwork/Dockerfile
+    environment:
+      - NODE_ENV=development
+      - PORT=8080
+    ports:
+      - "8080:8080"
+

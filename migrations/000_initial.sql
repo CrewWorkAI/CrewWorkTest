@@ -1,9 +1,13 @@
 -- Initial database schema for Haiku Battle League MVP
 -- Uses PostgreSQL 14+ (UUID, gen_random_uuid, plpgsql)
 
--- ---------------------------------------------------------------------
+-- Enable extensions for UUID generation and cryptographic functions
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+
+-- ----------------------------------------------------------------------
 -- Users
--- ---------------------------------------------------------------------
+-- -------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email TEXT UNIQUE NOT NULL,
@@ -26,9 +30,9 @@ CREATE TRIGGER trg_users_updated_at
 BEFORE UPDATE ON users
 FOR EACH ROW EXECUTE FUNCTION users_update_updated_at();
 
--- ---------------------------------------------------------------------
+-- ------------------------------------------------------------------------
 -- Haikus
--- ---------------------------------------------------------------------
+-- ------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS haikus (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -36,9 +40,9 @@ CREATE TABLE IF NOT EXISTS haikus (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ---------------------------------------------------------------------
+-- ------------------------------------------------------------------------
 -- Battles
--- ---------------------------------------------------------------------
+-- ------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS battles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     haiku_a_id UUID REFERENCES haikus(id) ON DELETE RESTRICT,
@@ -47,9 +51,9 @@ CREATE TABLE IF NOT EXISTS battles (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ---------------------------------------------------------------------
+-- ------------------------------------------------------------------------
 -- Aggregated daily and weekly points
--- ---------------------------------------------------------------------
+-- ------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS daily_points (
     user_id UUID REFERENCES users(id),
     date DATE NOT NULL,
@@ -82,4 +86,9 @@ CREATE TABLE IF NOT EXISTS weekly_winners (
 CREATE INDEX IF NOT EXISTS idx_haikus_user_id ON haikus(user_id);
 CREATE INDEX IF NOT EXISTS idx_battles_created_at ON battles(created_at);
 CREATE INDEX IF NOT EXISTS idx_user_points ON users(points DESC);
-
+CREATE INDEX IF NOT EXISTS idx_battles_winner_id ON battles(winner_id);
+CREATE INDEX IF NOT EXISTS idx_battles_haiku_a_id ON battles(haiku_a_id);
+CREATE INDEX IF NOT EXISTS idx_battles_haiku_b_id ON battles(haiku_b_id);
+-- Additional indexes for efficient aggregation and leaderboards
+CREATE INDEX IF NOT EXISTS idx_daily_points_user_date ON daily_points(user_id, date DESC);
+CREATE INDEX IF NOT EXISTS idx_weekly_points_user_week ON weekly_points(user_id, week_start DESC);
