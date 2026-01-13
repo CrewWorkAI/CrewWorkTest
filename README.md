@@ -1,4 +1,73 @@
 # CrewWorkTest – Enterprise Customer Success Platform
+## Architecture Overview
+The system is decomposed into classic **D‑C‑I** layers (Domain‑Application‑Interface) that keep the core business logic isolated from infrastructure and presentation concerns.
+```
+┌───────────────────────┐
+│  1️⃣  Domain Layer     │  │ Entities
+│  (Business Rules)      │  │  • classes in src/entities
+│─────────────────────── │  │  • pure POJOs / value objects
+│  2️⃣  Application Layer│  │ Services & orchestrators
+│  (Use‑Case Logic)      │  │  • functions that consume Domain
+│─────────────────────── │  │  • no external side‑effects
+│  3️⃣  Interface         │  │ Controllers
+│  (Adjacency to world) │  │  • REST+UI entry points
+├───────────────────────┤
+│ Infra    (Mocks)       │  │ In‑memory persistence
+│  • repositories        │  │ • queue / scheduler mock
+└───────────────────────┘
+```
+The diagram above is intentionally **text‑only** – the repository contains
+the source for the mock infrastructure and the small web UI bundled into the
+same project to keep the prototype lightweight.
+## Design Decisions
+| Decision | Rationale |
+|----------|-----------|
+| **Plain JavaScript** | Avoids compilation overhead and keeps the prototype fast to iterate. |
+| **No database** | In‑memory store keeps all tests deterministic and prevents external
+dependencies during CI. |
+| **Node.js + Express (or built‑in http)** | Minimal runtime, well‑known ecosystem, unit tests use the same. |
+| **CSS‑only UI** | No CSS framework to keep bundle size low and focus on business.
+| **Svelte** for UI (commented because the repo uses plain HTML + JS for now) | Allows fast SPA while still being lightweight. |
+| **Deterministic ID generation** | Enables reliable test fixtures. |
+| **Mock event loop for SLA timers** | Simulates asynchronous escalation without real async timers. |
+| **Minimal test harness** | Using native `node --test` to avoid extra test framework complexity. |
+## Testing Guide
+### Running Tests
+All tests are in `src/__tests__` and can be executed with the built‑in Node
+test runner:
+```bash
+npm test
+```
+The command runs both **unit** and **integration** tests in two phases.
+1. **Unit** – individual services (`src/services/*.js`) are evaluated with
+   mocked dependencies to assert pure logic.  Each unit test file exports a
+   function named `runTest` returning a Promise.
+2. **Integration** – the mock controller (`src/app/index.js`) and mock
+   infrastructure are started in a single process; tests hit the exposed
+   HTTP endpoints using `node --test`'s `fetch` polyfill.
+
+### Test Coverage
+Coverage is measured during the CI run; a minimum of **90 %** for statements
+and branches is required.  The `coverage` folder is generated in the root
+after `npm test`.
+
+### Smoke Test for UI
+The file `src/__tests__/smoke.test.js` spins up the server on an ephemerally
+assigned port, launches a headless browser via `playwright`, navigates to
+`/accounts` and checks that the table contains at least one row.
+
+### Writing a New Test
+To add a new test:
+1. Create a file under `src/__tests__/` ending with `.test.js`.
+2. Export an async function `runTest()` that performs the test.  The
+   function should `throw` if the test fails – the harness will capture
+   the error.
+3. Ensure new code paths are exercised in the unit tests first, then write
+   integration tests to cover the HTTP flow.
+
+> **Note** – The test harness intentionally does *not* start an external
+> database; any persistence must be performed against the provided
+> in‑memory repository.
 
 This repository contains an in‑memory prototype of an **Enterprise Customer Success** platform. It focuses on core business concepts such as accounts, contacts, contracts, health signals, playbooks, and renewal risks. The goal is to demonstrate a clean architecture, testability, and a minimal UI that can be extended or moved to a real database later.
 
