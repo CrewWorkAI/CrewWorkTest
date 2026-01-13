@@ -69,8 +69,8 @@ app.post('/api/auth/register', async (req, res) => {
     updatedAt: new Date().toISOString(),
   };
   users.push(user);
-  // Return auth token (user id for demo)
-  res.json({ userId: user.id, token: user.id });
+  // Return auth token and preserve `userId` field for compatibility with legacy tests.
+  res.json({ id: user.id, userId: user.id, token: user.id });
 });
 
 app.post('/api/auth/login', async (req, res) => {
@@ -85,10 +85,12 @@ app.post('/api/auth/login', async (req, res) => {
 
 // --- Haiku CRUD ----------------------------
 app.post('/api/haiku', (req, res) => {
-  // Require authentication
+  console.log('haiku route auth header', req.headers.authorization);
   const user = getUserFromToken(req);
+  console.log('haiku route found user', user?.id ?? 'none');
   if (!user) return res.status(401).json({ error: 'Unauthorized' });
   const { text } = req.body;
+  console.log('haiku route body text', text);
   if (!text) return res.status(400).json({ error: 'Missing text' });
   const haiku: Haiku = {
     id: uuidv4(),
@@ -137,6 +139,7 @@ app.get('/api/battle/pair', (req, res) => {
   const available = excludeUser
     ? haikus.filter((h) => h.userId !== excludeUser)
     : haikus;
+  console.log('pair route debug: available count', available.length);
   if (available.length < 2) {
     return res.status(500).json({ error: 'Not enough haikus for pairing' });
   }
