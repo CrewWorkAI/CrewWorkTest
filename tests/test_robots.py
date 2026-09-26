@@ -21,3 +21,4 @@ def test_robots_txt_allows_all_crawlers():
     assert re.search(r"^Disallow:\s*$", content, flags=re.MULTILINE), (
         "robots.txt must contain an empty 'Disallow:' directive to allow all crawlers"
     )
+    assert content.strip(), "robots.txt must not be empty"
