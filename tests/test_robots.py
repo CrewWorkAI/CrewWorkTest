@@ -1,4 +1,7 @@
-"""Tests for the root robots.txt file."""
+"""Tests for the root robots.txt file.
+
+Validates that robots.txt exists at the repository root and allows all crawlers.
+"""
 
 import os
 import re
