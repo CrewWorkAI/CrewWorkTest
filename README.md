@@ -1,2 +1,2 @@
 # CrewWorkTest
-public testing
+This repository is used for public testing of CrewWork.
