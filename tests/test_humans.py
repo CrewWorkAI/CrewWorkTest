@@ -11,10 +11,12 @@ HUMANS_PATH = os.path.join(REPO_ROOT, "humans.txt")
 
 
 def test_humans_txt_exists():
+    """Verify that humans.txt exists at the repository root."""
     assert os.path.isfile(HUMANS_PATH), "humans.txt must exist at the repository root"
 
 
 def test_humans_txt_content():
+    """Verify that humans.txt contains exactly the expected two-line content."""
     with open(HUMANS_PATH, "r", encoding="utf-8") as f:
         content = f.read()
 
